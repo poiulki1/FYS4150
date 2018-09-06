@@ -5,5 +5,5 @@
 *.log
 *.out
 auto/
-
-
+*.tex~
+*.swp
