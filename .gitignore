@@ -1,0 +1,9 @@
+.DS_Store
+*.pyc
+*.o
+*.aux
+*.log
+*.out
+auto/
+
+
