@@ -27,14 +27,15 @@ def main():
     legend_list = []
     start = 0; stop = n[0] + 2
     for i in range(1, len(n)):
-        s = "n=", n[i-1]
-        legend_list.append(s)
-        
+        legend_list.append("n="+str(n[i-1]))
+
         plt.plot(x[start:stop], y[start:stop], label = legend_list[i-1])
-        
+
         start = stop
         stop +=  2 + n[i]
-        
+        if i == (len(n)-1):
+            plt.plot(x[start:stop], y[start:stop], label = "n="+str(n[-1]))
+
     plt.plot(x_exact, exact(x_exact), "r--", label ="exact")
     plt.legend()
     plt.xlabel('$x$')
