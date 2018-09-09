@@ -30,8 +30,9 @@ def exact(x):
 
 def main():
     """
-    Main function, assigning the read columns to the n, y and x, by using the n
-    list we are able to slice y and x for different mesh points to plot
+    Main function, assign the read columns to the n, y and x. Then use n
+    list to slice y and x for different mesh points to plot. File name needs to
+    be given in the code below (not argument)
     """
     x_exact = np.linspace(0, 1, 1e5)
     n, y, x = read_2_col_file("sim_data.txt")
