@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn
 
 def read_2_col_file(file_name):
+    """
+    This function reads the text file line wise and splits the two columns and
+    stores it in separate lists. We want to plot 1/h, so the column two is
+    implemented to calculate this already in the read stage.
+    """
     myfile = open(file_name, "r")
     col1 = []; col2 = []
     lines = myfile.readlines()
@@ -14,6 +19,9 @@ def read_2_col_file(file_name):
     return col1, col2
 
 def main():
+    """
+    Logarithmic plot of the data read from the text file stored in two lists
+    """
     error, h = read_2_col_file("error_data.txt")
     log_h = np.log10(h)
     log_error = np.log10(error)

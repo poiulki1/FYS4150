@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn
 
 def read_2_col_file(file_name):
+    """
+    This function is opening a given text file, reads line for line, splits
+    the columns and appends to the lists. If there's a single element/column,
+    it appends these elements in a different list (n_list).
+    """
     myfile = open(file_name, "r")
     n_list = []
     col1 = []
@@ -21,7 +26,13 @@ def read_2_col_file(file_name):
 def exact(x):
     return 1.0 - (1 - np.exp(-10))*x -np.exp(-10*x)
 
+
+
 def main():
+    """
+    Main function, assigning the read columns to the n, y and x, by using the n
+    list we are able to slice y and x for different mesh points to plot
+    """
     x_exact = np.linspace(0, 1, 1e5)
     n, y, x = read_2_col_file("sim_data.txt")
     legend_list = []
@@ -36,6 +47,7 @@ def main():
         if i == (len(n)-1):
             plt.plot(x[start:stop], y[start:stop], label = "n="+str(n[-1]))
 
+    #plotting the exact function to compare
     plt.plot(x_exact, exact(x_exact), "r--", label ="exact")
     plt.legend()
     plt.xlabel('$x$')

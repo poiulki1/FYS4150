@@ -1,9 +1,3 @@
-//legge til LU med armadillo -- kanskje i en annen cpp program, for å ikke ødelegge det som funker her og for å ikke endre masse ting
-//finne FLOPS
-
-//finner log(error) i python fordi måten vi finner største error verdi ga oss -inf, så vi finner den største verdien og finner
-//log10 av dette i python når vi plotter
-
 #include <cmath>
 #include <iostream>
 #include <fstream>
