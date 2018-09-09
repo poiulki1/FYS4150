@@ -7,3 +7,4 @@
 auto/
 *.tex~
 *.swp
+*.cpp#
