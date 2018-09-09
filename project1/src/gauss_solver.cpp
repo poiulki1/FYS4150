@@ -27,8 +27,8 @@ int main(int argc, char* argv[]){
         exponent = atoi(argv[1]);
         algo = atoi(argv[2]);
     }
-    ofstream myfile_sim ("sim_data.txt"); //simulated data - depends on the second cml arg. which algo will be used to write the data
-    ofstream myfile_error ("error_data.txt"); //error data - to plot relative error with python
+    ofstream myfile_sim ("sim_thomas_data.txt"); //simulated data - depends on the second cml arg. which algo will be used to write the data
+    ofstream myfile_error ("error_thomas_data.txt"); //error data - to plot relative error with python
 
     for(int i = 1; i <= exponent; i++){
         N = (int) pow(10.0,i);
@@ -113,7 +113,7 @@ void general_solver(int N, double* a, double* b, double* c, double* s, double* v
 
     }
     //backward
-    v[N-1] = s[N-1]/b[N-1];
+    v[N+1] = s[N+1]/b[N+1]; //initial value (last element)
 
     for(int i = N+1; i > 1; i--){
         v[i-1]= (s[i-1] - c[i-1]*v[i])/b[i-1];
@@ -130,7 +130,7 @@ void specific_solver(int N, double* b, double* s, double* v){
 
     }
     //backward
-    v[N-1] = s[N-1]/b[N-1];
+    v[N+1] = s[N+1]/b[N+1]; //initial value (last element)
 
     for(int i = N+1; i > 1; i--){
         v[i-1] = (s[i-1] + v[i])/b[i-1];
