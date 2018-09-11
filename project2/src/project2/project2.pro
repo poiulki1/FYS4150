@@ -7,6 +7,10 @@ INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib
 
 SOURCES += \
-        main.cpp
+        main.cpp \
+    eigenvalue_solver.cpp
 
 LIBS += -larmadillo -llapack -lblas
+
+HEADERS += \
+    eigenvalue_solver.h
