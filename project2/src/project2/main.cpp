@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
         n = atoi(argv[1]);
     }
     arma::mat A = arma::zeros<arma::mat>(n,n);
-
+    //h^2 skal henge på matrise elementene denne gangen
     for(int i = 0; i < n; i++){
         A(i,i) = 2;
         if(i != n-1 ){
@@ -44,7 +44,7 @@ void jacobirotate(arma::mat& A, arma::mat& R, unsigned int& k, unsigned int& l, 
     double t,tau;
     tau = (A(l,l) - A(k,k))/(2*A(k,l));
     if(tau>0){
-      t = 1.0/(tau + sqrt(1.0 + tau*tau));
+      t = 1.0/(tau + sqrt(1.0 + tau*tau)); //riktig? s.217 - skal man dele?
     }
     else{
       t = -1.0/(-tau + sqrt(1.0 + tau*tau));
