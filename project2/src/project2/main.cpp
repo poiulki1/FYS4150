@@ -1,38 +1,75 @@
 #include <iostream>
 #include <armadillo>
+#include <iomanip>
+#include <cmath>
+
+//header files
+#include <time.h>
+//#include
+
 
 using namespace std;
 
 void eigen_value_check_armadillo(arma::mat &);
+void fill_tridiagonal_matrix(arma::mat&, int, double);
+void find_max_offdiag(arma::mat&, unsigned int&, unsigned int&, unsigned int&); //trenger k og l som argumenter i denne?
+void jacobirotate(arma::mat&, arma::mat&, unsigned int&, unsigned int&, unsigned int&);
+
 int main(int argc, char* argv[]){
-    int n;
+    int n, exponent;
     if(argc < 2){
         cout << "Please give a correct agrument" << endl;
         exit(1);
     }
     else{
-        n = atoi(argv[1]);
+        exponent = atoi(argv[1]);
     }
+
+    //for(int i = 1; i <= exponent; i++){
+    n = (int) pow(10.0,i); //loope for hver N, samme som proj. 1
+    double dt = (stop-start)/((float) n);
+
+    double eps = pow(10.0, -9); //tolerance ~0
+
     arma::mat A = arma::zeros<arma::mat>(n,n);
-    //h^2 skal henge på matrise elementene denne gangen
-    for(int i = 0; i < n; i++){
-        A(i,i) = 2;
-        if(i != n-1 ){
-            A(i+1,i) = -1;
-            A(i,i+1) = -1;
+    double diag = 2.0/(dt*dt);
+    double non_diag = -1.0/(dt*dt);
 
-        }
-
-    }
+    fill_tridiagonal_matrix(A, n, diag, non_diag);
 
     eigen_value_check_armadillo(A);
+    //start time here
+    while(max > eps && iter <= max_iter){
+        max = 5.0;
+
+        find_max_offdiag(A, k, l, n); //trenger vi k og l som arg? - denne funk oppdaterer max og k og l
+        jacobirotate(A, R, k, l, n);
+
+        iter++;
+    }
+    cout << iter << "transformation were needed to diagonalize matrix A" << endl;
 
 }
+
+void fill_tridiagonal_matrix(amra::mat& matrix, int n, double diag, double non_diag){
+    // diag and non_diag, are the values we want to fill given matrix, which becomes tridiagonal symmetric matrix
+    for(int i = 0; i < n; i++){
+        matrix(i,i) = diag;
+        if(i != n-1 ){
+            matrix(i+1,i) = non_diag;
+            matrix(i,i+1) = non_diag;
+        }
+}
+
+
 void eigen_value_check_armadillo(arma::mat& matrix){
     arma::cx_vec eigenvalues;
     arma::cx_mat eigenvectors;
 
-    arma::eig_gen(eigenvalues, eigenvectors, matrix);
+    arma::eig_gen(eigenvalues, eigenvectors, matrix); //hvorfor ikke eig_sym?
+    arma::eig_sys(eigenvalues, matrix);
+    //return eigenvalues
+
     cout << eigenvalues << endl;
 }
 
@@ -44,7 +81,7 @@ void jacobirotate(arma::mat& A, arma::mat& R, unsigned int& k, unsigned int& l, 
     double t,tau;
     tau = (A(l,l) - A(k,k))/(2*A(k,l));
     if(tau>0){
-      t = 1.0/(tau + sqrt(1.0 + tau*tau)); //riktig? s.217 - skal man dele?
+      t = 1.0/(tau + sqrt(1.0 + tau*tau)); //instead of -tau ± sqrt(1+tau*tau), make sure num. precision won't couse error
     }
     else{
       t = -1.0/(-tau + sqrt(1.0 + tau*tau));
@@ -96,6 +133,3 @@ void find_max_offdiag(arma::mat& A, unsigned int& k, unsigned int& l, unsigned i
   }
 }
 
-
-
-//hei2
