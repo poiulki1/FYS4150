@@ -11,7 +11,7 @@
 using namespace std;
 
 void eigen_value_check_armadillo(arma::mat &);
-void fill_tridiagonal_matrix(arma::mat&, int, double);
+void fill_tridiagonal_matrix(arma::mat&, int, double, double);
 void find_max_offdiag(arma::mat&, unsigned int&, unsigned int&, unsigned int&); //trenger k og l som argumenter i denne?
 void jacobirotate(arma::mat&, arma::mat&, unsigned int&, unsigned int&, unsigned int&);
 
@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
 
     eigen_value_check_armadillo(A);
     //start time here
+
     while(max > eps && iter <= max_iter){
         max = 5.0;
 
