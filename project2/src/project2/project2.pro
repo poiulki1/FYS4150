@@ -8,7 +8,8 @@ LIBS += -L/usr/local/lib
 
 SOURCES += \
         main.cpp \
-    eigenvalue_solver.cpp
+    eigenvalue_solver.cpp \
+    jacobi_test.cpp
 
 LIBS += -larmadillo -llapack -lblas
 
