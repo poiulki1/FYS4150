@@ -1,3 +1,5 @@
+//sjekk kommentarer i eigenvalue_solver.cpp under test_jacobi func
+
 #include <iostream>
 #include <armadillo>
 #include <iomanip>
@@ -10,12 +12,6 @@
 
 
 using namespace std;
-
-
-//void eigen_value_check_armadillo(arma::mat &);
-void fill_tridiagonal_matrix(arma::mat&, int, double, double);
-//void find_max_offdiag(arma::mat&, unsigned int&, unsigned int&, unsigned int&); //trenger k og l som argumenter i denne?
-//void jacobirotate(arma::mat&, arma::mat&, unsigned int&, unsigned int&, unsigned int&);
 
 int main(int argc, char* argv[]){
 
@@ -31,20 +27,20 @@ int main(int argc, char* argv[]){
 
     test_max();
     test_jacobi();
-    exit(1);
 
     //for(int i = 1; i <= exponent; i++){
     n = (int) pow(10.0,exponent); //loope for hver N, samme som proj. 1
 
     double start = 0.0;
-    double stop = 5.0;
+    double stop = 1.0;
     double dt = (stop-start)/((float) n);
-
 
     double eps = pow(10.0, -8); //tolerance ~0
 
     arma::mat A = arma::zeros<arma::mat>(n,n);
-    arma::mat R = arma::zeros<arma::mat>(n,n);
+    arma::mat R = arma::eye<arma::mat>(n,n);
+
+    arma::vec eig_val(n); //vector to store eigenvalues - sorted A diagonal elements
 
     double diag = 2.0/(dt*dt);
     double non_diag = -1.0/(dt*dt);
@@ -54,9 +50,9 @@ int main(int argc, char* argv[]){
     fill_tridiagonal_matrix(A, n, diag, non_diag);
 
     //start time here
-    double max = 1; //bigger than eps
+    double max = 0.01; //bigger than eps
 
-    int max_iter = 10000000;
+    int max_iter = 1000000;
     int iter = 0;
 
     while(max > eps && iter < max_iter){
@@ -68,12 +64,14 @@ int main(int argc, char* argv[]){
 
     cout << iter << " transformation(s) were needed to diagonalize matrix A" << endl;
 
-    arma::mat exact_eig_values(n,n);
+    arma::vec exact_eig_values(n);
 
     analytic_eig(exact_eig_values, n, non_diag, diag);
 
+    eig_val = arma::sort(diagvec(A));
+
     for(int bb = 0; bb < n; bb++){
-        cout << "A: " << A(bb,bb) << "..." << "exact eig val: " << exact_eig_values(bb,bb) << endl;
+        cout << "num: " << eig_val(bb) << "..." << "anal: " << exact_eig_values(bb) << endl;
     }
     return 0;
 }

@@ -5,7 +5,7 @@
 
 
     void eigen_value_check_armadillo(arma::mat&);
-    void analytic_eig(arma::mat&, int, double, double);
+    void analytic_eig(arma::vec&, int, double, double);
     void find_max_offdiag(arma::mat&, unsigned int&, unsigned int&, int&);
     void jacobirotate(arma::mat&, arma::mat&, unsigned int&, unsigned int&, int&);
     void fill_tridiagonal_matrix(arma::mat&, int, double, double);
