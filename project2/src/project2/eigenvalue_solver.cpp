@@ -13,18 +13,18 @@ void eigen_value_check_armadillo(arma::mat& matrix){
         //cout << eigenvalues << endl;
 }
 
-void analytic_eig(arma::vec& eig_values, int dim, double a, double d){
+void analytic_eig(arma::mat& eig_values, int dim, double a, double d){
 
     for(int i = 0; i < dim; i++){
-        eig_values[i] = d + 2*a*cos(((i+1)*acos(-1))/(dim + 1.0));
+        eig_values(i,i) = d + 2*a*cos(((i+1)*acos(-1))/(dim + 1.0));
+        //cout << eig_values(i) << endl;
     }
 }
 
 
-
-
-void find_max_offdiag(arma::mat& A, unsigned int& k, unsigned int& l, unsigned int& n, double& max){
+void find_max_offdiag(arma::mat& A, unsigned int& k, unsigned int& l, int& n){
   // Finds maximum element on upper diagonal of a matrix A
+  double max = 0.0;
   for(unsigned int i = 0; i < n; i++){
     for(unsigned int j = i+1; j < n; j++){
       if (fabs(A(i,j)) > max){
@@ -34,12 +34,10 @@ void find_max_offdiag(arma::mat& A, unsigned int& k, unsigned int& l, unsigned i
       }
     }
   }
-  //return max;
 }
 
 
-
-void jacobirotate(arma::mat& A, arma::mat& R, unsigned int& k, unsigned int& l, unsigned int& n){
+void jacobirotate(arma::mat& A, arma::mat& R, unsigned int& k, unsigned int& l, int& n){
   // Rotate: Find values of cos and sin
   double s,c;
   if(A(k,l) != 0.0){
@@ -84,41 +82,90 @@ void jacobirotate(arma::mat& A, arma::mat& R, unsigned int& k, unsigned int& l, 
   }
 }
 
-void test_jacobi(){
-    unsigned int n = 3;
 
-    arma::mat A(n,n);
-    arma::mat R(n,n);
+void test_max(){
+    int n = 4;
+    unsigned long long size = 4;
 
-    arma::vec eig_val(n);
+    double eps = pow(10,-8);
 
-    A(0,0) = A(1,1) = 3;
-    A(2,2) = 5;
+    arma::mat A = arma::zeros<arma::mat>(size,size);
+
+    unsigned int k, l;
+    double biggest_element = 1240.2;
+
+    A(0,0) = A(1,1) = A(2,2) = A(3,3) = 3;
+    A(2,2) = 9;
     A(0,1) = A(1,0) = 1;
-    A(0,2) = A(1,2) = A(2,0) = A(2,1) = -1;
+    A(1,2) = A(2,1) = biggest_element;
+    A(2,3) = A(3,2) = 9;
 
-    eig_val(0) = 2.0;
-    eig_val(1) = 3.0;
-    eig_val(2) = 6.0;
+    find_max_offdiag(A,k,l,n);
+
+
+    if((abs((A(l,k))-(abs(biggest_element))) < eps) && (k == 2) && (l == 1)){
+        cout << "Finding max offdiag element test PASSED" << endl;
+    }
+    else{
+        cout << "Finding max offdiag element test FAILED - need to check the find_max_offdiag function" << endl;
+        exit(1);
+    }
+
+}
+
+void test_jacobi(){
+    int n = 4;
+    unsigned long long size = 4;
+    arma::mat A = arma::zeros<arma::mat>(size,size);
+    arma::mat R = arma::zeros<arma::mat>(size,size);
+
+    arma::vec eig_val(size);
+
+    A(0,0) = A(1,1) = A(2,2) = A(3,3) = 3;
+
+    A(0,1) = A(1,0) = 1;
+    A(1,2) = A(2,1) = 4;
+    A(2,3) = A(3,2) = 5;
+
+    eig_val(0) = -3.4340;
+    eig_val(1) = 2.2229;
+    eig_val(2) = 3.7771;
+    eig_val(3) = 9.4340;
 
     unsigned int k, l;
     int iter, max_iter;
-    iter = 1;  max_iter = 3;
-    double max = 0.01;
+    iter = 1;  max_iter = 10000;
+
 
     double eps = pow(10.0, -8);
-
-    while(max > eps && iter <= max_iter){
-        find_max_offdiag(A,k,l,n, max);
+    double max = 0.1;
+    A.print();
+    while(max > eps && iter < max_iter){
+        find_max_offdiag(A,k,l,n);
+        max = fabs(A(l,k));
         jacobirotate(A, R, k, l, n);
         iter++;
     }
+    A.print();
+    exit(1);
 
-    if(abs(A(0,0) - eig_val(0)) < eps && abs(A(1,1) - eig_val(1))< eps && abs(A(2,2) - eig_val(2))< eps){
-        cout << "Jacobi test passed" << endl;
+    if((abs(A(0,0) - eig_val(0)) < eps) && (abs(A(1,1) - eig_val(1))< eps) && (abs(A(2,2) - eig_val(2))< eps) && (abs(A(3,3) - eig_val(3))< eps)){
+        cout << "Jacobi test PASSED" << endl;
     }
     else{
-        cout << "fail"<< endl;
+        cout << "Jacobi test FAILED - need to check jacobi rotate function"<< endl;
         exit(1);
+    }
+}
+
+
+void fill_tridiagonal_matrix(arma::mat& matrix, int n, double diag, double non_diag){
+    // diag and non_diag, are the values we want to fill given matrix, which becomes tridiagonal symmetric matrix
+    for(int i = 0; i < n; i++){
+        matrix(i,i) = diag;
+        if(i != n-1 ){
+            matrix(i+1,i) = non_diag;
+            matrix(i,i+1) = non_diag;
+        }
     }
 }
