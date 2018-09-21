@@ -8,10 +8,13 @@ LIBS += -L/usr/local/lib
 
 SOURCES += \
         main.cpp \
-    eigenvalue_solver.cpp \
-    jacobi_test.cpp
+    jacobi.cpp \
+    test.cpp \
+    quantum.cpp
 
 LIBS += -larmadillo -llapack -lblas
 
 HEADERS += \
-    eigenvalue_solver.h
+    test.h \
+    jacobi.h \
+    quantum.h

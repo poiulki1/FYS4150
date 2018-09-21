@@ -8,23 +8,31 @@
 
 //header files
 #include "time.h"
-#include "eigenvalue_solver.h"
-
+#include "jacobi.h"
+#include "test.h"
+#include "quantum.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]){
 
-    int n, exponent;
+    int n, exponent, max_iter;
 
-    if(argc < 1){
-        cout << "Please give a correct agrument" << endl;
+    if(argc < 2){
+        cout << "Please give a correct agruments: power of 10 to determinate steps, max number of rotations" << endl;
         exit(1);
     }
     else{
         exponent = atoi(argv[1]);
+        max_iter = atoi(argv[2]);
+
+        if((exponent*max_iter) == 0){
+            cout << "All of the arguments need to be numbers" << endl;
+            exit(1);
+        }
     }
 
+    //unit tests
     test_max();
     test_jacobi();
 
@@ -33,45 +41,23 @@ int main(int argc, char* argv[]){
 
     double start = 0.0;
     double stop = 1.0;
-    double dt = (stop-start)/((float) n);
 
     double eps = pow(10.0, -8); //tolerance ~0
 
-    arma::mat A = arma::zeros<arma::mat>(n,n);
-    arma::mat R = arma::eye<arma::mat>(n,n);
+    //memory allocation
+    arma::mat A = arma::zeros<arma::mat>(n,n); //matrix to be initialized later
+    arma::vec eig_val(n); //vector to store numerical eigenvalues - sorted A diagonal elements
+    arma::vec exact_eig_values(n); //vector to store analytical eigenvalues
 
-    arma::vec eig_val(n); //vector to store eigenvalues - sorted A diagonal elements
+    //initialize_tridiagonal_matrix(A, n, start, stop);
+    repulsive_hamilton(A, start, stop, n, 0.5);
 
-    double diag = 2.0/(dt*dt);
-    double non_diag = -1.0/(dt*dt);
+    //analytical eigenvalues for tridiagonal matrix with the same elements on diagonal, and different but the same on off diag
+    //analytic_eig(exact_eig_values, n, non_diag, diag);
 
-    unsigned int k, l;
+    //jacobi algo. - rotating and finding the max off diag element repeated untill diagonalized or untill max iter rotations
+    jacobi(A, eig_val, n, max_iter, eps);
 
-    fill_tridiagonal_matrix(A, n, diag, non_diag);
 
-    //start time here
-    double max = 0.01; //bigger than eps
-
-    int max_iter = 1000000;
-    int iter = 0;
-
-    while(max > eps && iter < max_iter){
-        find_max_offdiag(A, k, l, n);
-        max = fabs(A(l,k));
-        jacobirotate(A, R, k, l, n);
-        iter++;
-    }
-
-    cout << iter << " transformation(s) were needed to diagonalize matrix A" << endl;
-
-    arma::vec exact_eig_values(n);
-
-    analytic_eig(exact_eig_values, n, non_diag, diag);
-
-    eig_val = arma::sort(diagvec(A));
-
-    for(int bb = 0; bb < n; bb++){
-        cout << "num: " << eig_val(bb) << "..." << "anal: " << exact_eig_values(bb) << endl;
-    }
     return 0;
 }
