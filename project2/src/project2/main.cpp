@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
     test_jacobi();
 
     //for(int i = 1; i <= exponent; i++){
-    n = (int) pow(10.0,exponent); //loope for hver N, samme som proj. 1
+    n = 250;//(int) pow(10.0,exponent); //loope for hver N, samme som proj. 1
 
     double start = 0.0;
     double stop = 1.0;
