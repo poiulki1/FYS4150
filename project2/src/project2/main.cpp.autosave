@@ -108,7 +108,7 @@ int main(int argc, char* argv[]){
         }
         else{
             cout << "Initializing matrix A with a harmonic oscillator potential and Coulomb repulsiv forces, then solving using armadillo function" << endl;
-            double omega = 5.0; //change manually
+            double omega = 0.01; //change manually
             cout << "Omega = " << omega << endl;
             repulsive_hamilton(A, start, stop, n, omega);
             eigensolver_armadillo(A, eig_val, R);
@@ -123,8 +123,8 @@ int main(int argc, char* argv[]){
         cout << eig_val(kk) << endl;
     }*/
     //saving to binary file - changing the name manually
-    //eig_val.save("eig_val_rep_w5.bin", arma::raw_binary);
-    //R.save("eig_vec_rep_w5_max5.bin", arma::raw_binary);
+    eig_val.save("eig_val_rep_w001.bin", arma::raw_binary);
+    R.save("eig_vec_rep_w001_max5.bin", arma::raw_binary);
 
     return 0;
 }

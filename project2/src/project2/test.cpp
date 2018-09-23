@@ -24,7 +24,7 @@ void test_max(){
     find_max_offdiag(A,k,l,n);
 
     if((abs((A(l,k))-(abs(biggest_element))) < eps) && (k == 2) && (l == 1)){
-        cout << "Finding max offdiag element test PASSED" << endl;
+        //PASSED
     }
     else{
         cout << "Finding max offdiag element test FAILED - need to check the find_max_offdiag function" << endl;
@@ -75,15 +75,12 @@ void test_jacobi(){
 
     //diagonalization/eigenvalue test
     if((fabs(eig_val(0) - exact_eig_val(0))) && (fabs(eig_val(1) - exact_eig_val(1))) && (fabs(eig_val(2) - exact_eig_val(2))) && (fabs(eig_val(3) - exact_eig_val(3)))){
-        cout << "Jacobi diagonalization test PASSED" << endl;
+        //PASSED
     }
     else{
         cout << "Jacobi diagonalization test FAILED - need to fix jacobi rotate function"<< endl;
         exit(1);
     }
-
-    //må finne kanskje en generell måte å sjekke alle og sånt, men det er bare test så vi MÅ ikke
-    //vi må finne ut hvordan man skal sortere egenverdier tilsvarende til sorterte egenverdier
 
     //orthogonality of eigenvectors test
     arma::vec vec1(size);
@@ -95,7 +92,7 @@ void test_jacobi(){
     }
 
     if((arma::dot(vec1,vec2)) < eps){
-        cout << "Jacobi orthogonality test PASSED" << endl;
+        //PASSED
     }
     else{
         cout << "Jacobi orthogonality test FAILED - need to fix jacobi rotate function" << endl;
@@ -104,10 +101,10 @@ void test_jacobi(){
 
     //symmetry test
     index1 = rand() % n;
-    index2 = rand() % index1;
+    index2 = rand() % index1-1;
 
     if(fabs(A(index1, index2) - A(index2, index1)) < eps){
-        cout << "Symmetry of a matrix is preserved after the Jacobi rotation(s)" << endl;
+        //PASSED
     }
     else{
         cout << "Symmetry of a matrix is gone after the Jacobi rotation(s)" << endl;

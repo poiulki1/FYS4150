@@ -1,13 +1,12 @@
 #include "jacobi.h"
 #include "time.h"
+#include <armadillo>
 
 using namespace std;
 
-void jacobi(arma::mat& A, arma::vec& eigenvalues, int size, int max_iter, double eps){
+void jacobi(arma::mat& A, arma::mat& R, arma::vec& eigenvalues, int size, int max_iter, double eps){
     //This function is applying jacobi rotation together with finding max offdiag element to diagonalize matrix A
     //In addition we are calculating the time used for the diagonalization
-
-    arma::mat R = arma::eye<arma::mat>(size, size); //identity matrix to store eigenvectors
 
     unsigned int k, l;
 
@@ -23,10 +22,7 @@ void jacobi(arma::mat& A, arma::vec& eigenvalues, int size, int max_iter, double
 
     eigenvalues = arma::sort(diagvec(A));
 
-    //total_time = stop_time - start_time;
     cout << iter << " tranfsormation(s) was/were needed to diagonalize given matrix" << endl;
-    //cout << "Diagonalization took " << total_time << "seconds" << endl;
-
 
 }
 
@@ -132,13 +128,7 @@ void analytic_eig(arma::vec& eig_values, int dim, double a, double d){
 }
 
 
-void eigen_value_check_armadillo(arma::mat& matrix){
-        arma::vec eigenvalues;
-        arma::mat eigenvectors;
+void eigensolver_armadillo(arma::mat& matrix, arma::vec& eigenvalues, arma::mat& eigenvectors){
+        arma::eig_sym(eigenvalues, eigenvectors, matrix);
 
-        arma::eig_sym(eigenvalues, eigenvectors, matrix); //hvorfor ikke eig_sym?
-        //arma::eig_sys(eigenvalues, matrix);
-        //return eigenvalues
-
-        //cout << eigenvalues << endl;
 }
