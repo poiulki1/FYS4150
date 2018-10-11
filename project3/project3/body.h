@@ -5,7 +5,11 @@
 class body
 {
 public:
-    body();
+    body(arma::vec pos, arma::vec vel, double mass);
+    double b_mass;
+    arma::vec b_position;
+    arma::vec b_velocity;
+    arma::vec acceleration = arma::vec<arma::zeros>(2);
 };
 
 #endif // BODY_H
