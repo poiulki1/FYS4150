@@ -10,11 +10,13 @@ SOURCES += \
         main.cpp \
     system.cpp \
     body.cpp \
-    vec3.cpp
+    vec3.cpp \
+    solver.cpp
 
 LIBS += -larmadillo -llapack -lblas
 
 HEADERS += \
     system.h \
     body.h \
-    vec3.h
+    vec3.h \
+    solver.h
