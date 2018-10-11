@@ -1,0 +1,28 @@
+\begin{thebibliography}{}
+
+\bibitem[Griffiths, 2016]{gg}
+Griffiths, D. (2016).
+\newblock Introduction to quantum mechanics.
+
+\bibitem[Hjorth-Jensen, 2015]{morten2}
+Hjorth-Jensen, M. (2015).
+\newblock Lecture note fall.
+
+\bibitem[Hjorth-Jensen, 2018]{p2}
+Hjorth-Jensen, M. (Aug 6. 2018).
+\newblock Project 2, eigenvalue problem, from the equations of a buckling beam
+  to schr{\"o}edingers equation for two electrons in three dimensional harmonic
+  oscillator well.
+
+\bibitem[Loss and Divicenzo, 1998]{loss}
+Loss, D. and Divicenzo, D. (1998).
+\newblock Quantum computations with quantum dots.
+\newblock {\em Phys.Rev A}, 57(120).
+
+\bibitem[Taut, 1993]{taut}
+Taut, M. (1993).
+\newblock Two electrons in an external oscillator potential: Particular
+  analytical solutions of a coloumb correlation problem.
+\newblock {\em Phys rev.}, A 48(3561).
+
+\end{thebibliography}
