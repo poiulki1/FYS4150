@@ -1,21 +1,19 @@
 #include "body.h"
+#include "solver.h"
+#include <iostream>
+using namespace std;
 
 body::body()
 {
 
 }
 
-body::body(double M, double x, double y, double z, double vx, double vy, double vz)
+body::body(double M, vec3 pos, vec3 vel)
 {
     mass = M;
 
-    position[0] = x;
-    position[1] = y;
-    position[2] = z;
-
-    velocity[0] = vx;
-    velocity[1] = vy;
-    velocity[2] = vz;
+    position = pos;
+    velocity = vel;
 
     potential_energy = 0.;
     kinetic_energy = 0.;
@@ -39,25 +37,39 @@ double body::distance(body other_body)
 
     return sqrt(xx*xx + yy*yy + zz*zz);
 }
+/*
+vec3 body::grav_force(body other_body, double g_constant){
+    // calculate gravitational force between two bodies as a vector
+    int K = list_of_bodies.size();// (BUG)
 
-double body::grav_force(body other_body, double g_constant){
+    for(int i_body = 0; i_body < K; i_body++){
+        body1 = ;//list_of_bodies[i_body];
+        for(int j_body = i_body+1; j_body < K; j_body++){
+            body2 = ;//list_of_bodies[j_body];
+
+            vec3 rel_coordinates = body1.position - body2.position;
+            double rel_distance = body1.distance(body2);
+
+        }
+    }
+
     double r = this->distance(other_body);
+
+
+
+    /*
+    // calculates grav force for an object with fixed sun in the origin
     if(r != 0.0){
-        return (g_constant*this->mass*other_body.mass)/(r*r);
+        double weight = ((g_constant*this->mass*other_body.mass)/(r*r));
+        return ((this->position.flip())/(this->position.length()))*weight;
     }
     else{
-        return 0;
+        return vec3(1.0,0.0,0.0);
     }
 }
 
-double body::acceleration(body other_body, double g_constant){
-    double r = this->distance(other_body);
-    if(r != 0.0){
-        return this->grav_force(other_body, g_constant)/(this->mass*r);
-    }
-    else{
-        return 0;
-    }
+vec3 body::acceleration(body other_body, double g_constant){
+    return (this->grav_force(other_body, g_constant)/(this->mass));
 }
 
 double body::kinEnergy(){
@@ -72,4 +84,4 @@ double body::potEnergy(body &other_body, double g_constant, double eps){
     else{
         return (g_constant*this->mass*other_body.mass/eps)*(atan(this->distance(other_body)/eps) - (0.5*M_PI));
     }
-}
+}*/

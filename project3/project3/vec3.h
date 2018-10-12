@@ -18,6 +18,7 @@ public:
     double dot(vec3 otherVector);
     double lengthSquared();
     double length();
+    vec3 &flip();
     double x() const { return components[0]; }
     double y() const { return components[1]; }
     double z() const { return components[2]; }

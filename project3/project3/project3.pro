@@ -8,7 +8,6 @@ LIBS += -L/usr/local/lib
 
 SOURCES += \
         main.cpp \
-    system.cpp \
     body.cpp \
     vec3.cpp \
     solver.cpp
@@ -16,7 +15,6 @@ SOURCES += \
 LIBS += -larmadillo -llapack -lblas
 
 HEADERS += \
-    system.h \
     body.h \
     vec3.h \
     solver.h

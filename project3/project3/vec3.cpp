@@ -59,6 +59,14 @@ double vec3::length()
     return sqrt(lengthSquared());
 }
 
+vec3 &vec3::flip()
+{
+    components[0] = -components[0];
+    components[1] = -components[1];
+    components[2] = -components[2];
+    return *this;
+}
+
 vec3 &vec3::operator+=(double rhs)
 {
     components[0] += rhs;
