@@ -19,18 +19,21 @@ void solver::euler_one_step(double dt)
 {
     for(int body_nr=0; body_nr<list_of_bodies.size(); body_nr++){
 
+        //cout << "Planet nr. " << body_nr << endl;
 
 
         body &current = list_of_bodies[body_nr];
 
         vector<vec3> acc = acceleration(g_const);
-        //cout << acc[body_nr] << "acc" << endl;
 
+        //cout << "Acceleration" << acc[body_nr] << endl;
+
+        //integration, one step of Euler Forward
         current.position += current.velocity*dt;
         current.velocity += acc[body_nr]*dt;
 
-        //cout << current.position << endl;
-        //cout << current.velocity << endl;
+        //cout << "Position: " << current.position << endl;
+        //cout << "Velocity: " << current.velocity << endl;
 
         list_of_bodies[body_nr] = current;
     }
@@ -44,9 +47,10 @@ vector<vec3> solver::acceleration(double g_constant){
     vector<vec3> force(num_bodies);
 
     for(int i_body = 0; i_body < num_bodies; i_body++){
-
+        cout << "first loop planet nr: " << i_body << endl;
         body body1 = list_of_bodies[i_body];
         for(int j_body = i_body+1; j_body < num_bodies; j_body++){
+            cout << "second loop planet nr: " << j_body << endl;
             body body2 = list_of_bodies[j_body];
 
             vec3 rel_coordinates = body1.position - body2.position;
@@ -58,10 +62,10 @@ vector<vec3> solver::acceleration(double g_constant){
             if(rel_distance != 0){
                 double weight = (g_constant*body1.mass*body2.mass)/(rel_distance*rel_distance);
                 force[i_body] += (weight*rel_coord_unit);
-                //cout << weight<< "..." <<rel_coord_unit << "HER1" << endl;
                 acc[i_body] += (weight*rel_coord_unit)/body1.mass;
             }
             else{
+                cout << "NULL acc for planet nr.: " << i_body << endl;
                 acc[i_body] = vec3(0.,0.,0.);
                 force[i_body] = vec3(0.,0.,0.);
             }

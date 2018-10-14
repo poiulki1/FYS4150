@@ -11,9 +11,9 @@ using namespace std;
 int main()
 {
     vec3 earth_pos(1.0, 0.0, 0.0);
-    vec3 earth_vel(0.0, 3*M_PI, 0.0);
+    vec3 earth_vel(0.0, 2*M_PI, 0.0);
 
-    vec3 sun_pos(0.20,0.0,0.0);
+    vec3 sun_pos(0.02,0.0,0.0);
     vec3 sun_vel(0.0,0.0,0.0);
 
     body Earth(0.000003, earth_pos, earth_vel);
