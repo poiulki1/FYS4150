@@ -1,0 +1,294 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ Unable to negotiate connection within 2 seconds. Defaults: 
+                                                            
+ TERM= vt102, ROWS= 9999, COLUMNS= 9999, ECHO on, FULL-DUPLEX
+                                                            
+ Your terminal, command-line, telnet, or connection program 
+ may not be compliant with RFC 854 and RFC 1073 standards:  
+                                                            
+           http://tools.ietf.org/rfc/rfc854.txt             
+           http://tools.ietf.org/rfc/rfc1073.txt            
+                                                            
+ Using a different program to connect may solve the problem.
+                          -OR -                             
+ The network may be slow and need > 2 seconds (try again).  
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 
+  ======================================================================
+  |                     Jet Propulsion Laboratory                      |
+  |                                                                    |
+  |                  * * *    W A R N I N G   * * *                    |
+  |                                                                    |
+  |                          Property of the                           |
+  |                      UNITED STATES GOVERNMENT                      |
+  |                                                                    |
+  |    This computer is funded by the United States Government and     |
+  | operated by the California Institute of Technology in support of   |
+  | ongoing U.S. Government programs and activities.  If you are not   |
+  | authorized to access this system, disconnect now.  Users of this   |
+  | system have no expectation of privacy. By continuing, you consent  |
+  |     to your keystrokes and data content being monitored.           |
+  ======================================================================
+ 
+[H[J                                                                               
+     ___    _____     ___                                                      
+    /_ /|  /____/ \  /_ /|       Horizons On-line Ephemeris System v4.51       
+    | | | |  __ \ /| | | |       Solar System Dynamics Group                   
+ ___| | | | |__) |/  | | |__     Jet Propulsion Laboratory                     
+/___| | | |  ___/    | |/__ /|   Pasadena, CA, USA                             
+|_____|/  |_|/       |_____|/                                                  
+ 
+ Establishing connection, stand-by ...  
+[H[J 
+JPL Horizons, version 4.51 
+Type '?' for brief help, '?!' for details, 
+'-' for previous prompt, 'x' to exit 
+System news updated October 13, 2018
+ 
+Horizons> 10
+[?1h=*******************************************************************************
+ Revised: July 31, 2013                  Sun                                 10
+
+ PHYSICAL PROPERTIES (updated 2018-Aug-15):
+  GM, km^3/s^2          = 132712440041.93938  Mass, 10^24 kg        = ~1988500
+  Vol. mean radius, km  = 695700              Volume, 10^12 km^3    = 1412000
+  Solar radius (IAU)    = 696000 km           Mean density, g/cm^3  = 1.408
+  Radius (photosphere)  = 696500 km           Angular diam at 1 AU  = 1919.3"
+  Photosphere temp., K  = 6600 (bottom)       Photosphere temp., K  = 4400(top)
+  Photospheric depth    = ~500 km             Chromospheric depth   = ~2500 km
+  Flatness, f           = 0.00005             Adopted sid. rot. per.= 25.38 d
+  Surface gravity       =  274.0 m/s^2        Escape speed, km/s    =  617.7
+  Pole (RA,DEC), deg.   = (286.13, 63.87)     Obliquity to ecliptic = 7.25 deg.
+  Solar constant (1 AU) = 1367.6 W/m^2        Luminosity, 10^24 J/s = 382.8
+  Mass-energy conv rate = 4.260 x 10^9 kg/s   Effective temp, K     = 5772
+  Sunspot cycle         = 11.4 yr             Cycle 24 sunspot min. = 2008 A.D.
+
+  Motion relative to nearby stars = apex : R.A.= 271 deg.; DEC.= +30 deg.
+                                    speed: 19.4 km/s (0.0112 au/day)
+  Motion relative to 2.73K BB/CBR = apex : l= 264.7 +- 0.8; b= 48.2 +- 0.5 deg.
+                                    speed: 369 +-11 km/s
+*******************************************************************************
+[K[?1l> Select ... [E]phemeris, [F]tp, [M]ail, [R]edisplay, ?, <cr>: E
+ 
+ Observe, Elements, Vectors  [o,e,v,?] : v
+ Coordinate center [ <id>,coord,geo  ] : 500@0
+[?1h=
+   #   E. Lon    DXY      DZ    Observatory Name
+  --- -------- ------- -------  ----------------
+  500   0.0000 +000000  000000  Solar System Barycenter (SSB)
+[K[?1l> 
+ Confirm selected station    [ y/n ] --> y
+ Reference plane [eclip, frame, body ] : eclip
+ Starting TDB [>= 9999BC-Mar-20 00:00] : 2018-Oct-24
+ Ending   TDB [<=   9999-Dec-31 12:00] : 2018-Nov-23
+ Output interval [ex: 10m, 1h, 1d, ? ] : 1d
+ 
+ Current output table defaults --
+   Ref. Frame     = ICRF/J2000.0
+   Corrections    = NONE
+   Units          = AU-D
+   CSV format     = NO
+   Output delta-T = NO
+   Table type     = 3 (position, velocity, LT, range, range-rate)
+   Vector label   = YES
+ 
+ Accept default output [ cr=(y), n, ?] : y
+ Working ...   - \ | / - \ |  
+[?1h=*******************************************************************************
+Ephemeris / PORT_LOGIN Wed Oct 24 12:04:56 2018 Pasadena, USA    / Horizons    
+*******************************************************************************
+Target body name: Sun (10)                        {source: DE431mx}
+Center body name: Solar System Barycenter (0)     {source: DE431mx}
+Center-site name: BODY CENTER
+*******************************************************************************
+Start time      : A.D. 2018-Oct-24 00:00:00.0000 TDB
+Stop  time      : A.D. 2018-Nov-23 00:00:00.0000 TDB
+Step-size       : 1440 minutes
+*******************************************************************************
+Center geodetic : 0.00000000,0.00000000,0.0000000 {E-lon(deg),Lat(deg),Alt(km)}
+Center cylindric: 0.00000000,0.00000000,0.0000000 {E-lon(deg),Dxy(km),Dz(km)}
+Center radii    : (undefined)                                                  
+Output units    : AU-D                                                         
+Output type     : GEOMETRIC cartesian states
+Output format   : 3 (position, velocity, LT, range, range-rate)
+Reference frame : ICRF/J2000.0                                                 
+Coordinate systm: Ecliptic and Mean Equinox of Reference Epoch                 
+*******************************************************************************
+JDTDB
+   X     Y     Z
+   VX    VY    VZ
+   LT    RG    RR
+*******************************************************************************
+$$SOE
+2458415.500000000 = A.D. 2018-Oct-24 00:00:00.0000 TDB 
+ X =-2.234619785058626E-04 Y = 7.274390046486359E-03 Z =-7.078174705339256E-05
+ VX=-7.610623097897841E-06 VY= 2.503573190772985E-06 VZ= 1.902738780650288E-07
+ LT= 4.203517938122504E-05 RG= 7.278165693358010E-03 RR= 2.734093412489842E-06
+2458416.500000000 = A.D. 2018-Oct-25 00:00:00.0000 TDB 
+ X =-2.310738425751619E-04 Y = 7.276889376464244E-03 Z =-7.059144005025431E-05
+ VX=-7.613105474988984E-06 VY= 2.495093559623982E-06 VZ= 1.903401609129172E-07
+ LT= 4.205096842860932E-05 RG= 7.280899482167640E-03 RR= 2.733490967157859E-06
+2458417.500000000 = A.D. 2018-Oct-26 00:00:00.0000 TDB 
+ X =-2.386881904735364E-04 Y = 7.279380247151148E-03 Z =-7.040106665809660E-05
+ VX=-7.615590903675829E-06 VY= 2.486654565178202E-06 VZ= 1.904066641332532E-07
+ LT= 4.206675411350573E-05 RG= 7.283632688780540E-03 RR= 2.732928986635987E-06
+2458418.500000000 = A.D. 2018-Oct-27 00:00:00.0000 TDB 
+ X =-2.463050256879250E-04 Y = 7.281862699053526E-03 Z =-7.021062663263403E-05
+ VX=-7.618080247081494E-06 VY= 2.478255947808241E-06 VZ= 1.904734353952315E-07
+ LT= 4.208253666906443E-05 RG= 7.286365353565410E-03 RR= 2.732407279989649E-06
+2458419.500000000 = A.D. 2018-Oct-28 00:00:00.0000 TDB 
+ X =-2.539243525456413E-04 Y = 7.284336772421999E-03 Z =-7.002011968228138E-05
+ VX=-7.620574322787939E-06 VY= 2.469897456688998E-06 VZ= 1.905405217313240E-07
+ LT= 4.209831632736176E-05 RG= 7.289097516705027E-03 RR= 2.731925667483288E-06
+2458420.500000000 = A.D. 2018-Oct-29 00:00:00.0000 TDB 
+ X =-2.615461761687441E-04 Y = 7.286802507263899E-03 Z =-6.982954546848195E-05
+ VX=-7.623073902711739E-06 VY= 2.461578857369772E-06 VZ= 1.906079701592676E-07
+ LT= 4.211409331948577E-05 RG= 7.291829218211044E-03 RR= 2.731483987852292E-06
+2458421.500000000 = A.D. 2018-Oct-30 00:00:00.0000 TDB 
+ X =-2.691705024285098E-04 Y = 7.289259943363689E-03 Z =-6.963890360537416E-05
+ VX=-7.625579713496858E-06 VY= 2.453299940027900E-06 VZ= 1.906758284050602E-07
+ LT= 4.212986787566535E-05 RG= 7.294560497946356E-03 RR= 2.731082106271792E-06
+2458422.500000000 = A.D. 2018-Oct-31 00:00:00.0000 TDB 
+ X =-2.767973379006741E-04 Y = 7.291709120312125E-03 Z =-6.944819365866003E-05
+ VX=-7.628092437687548E-06 VY= 2.445060528658140E-06 VZ= 1.907441457717838E-07
+ LT= 4.214564022544839E-05 RG= 7.297291395655951E-03 RR= 2.730719923289824E-06
+2458423.500000000 = A.D. 2018-Nov-01 00:00:00.0000 TDB 
+ X =-2.844266898223132E-04 Y = 7.294150077545036E-03 Z =-6.925741514352785E-05
+ VX=-7.630612715870694E-06 VY= 2.436860491208201E-06 VZ= 1.908129741723981E-07
+ LT= 4.216141059793411E-05 RG= 7.300021951007127E-03 RR= 2.730397384748548E-06
+2458424.500000000 = A.D. 2018-Nov-02 00:00:00.0000 TDB 
+ X =-2.920585660514558E-04 Y = 7.296582854392777E-03 Z =-6.906656752144674E-05
+ VX=-7.633141150044850E-06 VY= 2.428699750702514E-06 VZ= 1.908823693535474E-07
+ LT= 4.217717922206591E-05 RG= 7.302752203640205E-03 RR= 2.730114492753109E-06
+2458425.500000000 = A.D. 2018-Nov-03 00:00:00.0000 TDB 
+ X =-2.996929750308121E-04 Y = 7.299007490141281E-03 Z =-6.887565019562871E-05
+ VX=-7.635678308544194E-06 VY= 2.420578297394992E-06 VZ= 1.909523923438376E-07
+ LT= 4.219294632699060E-05 RG= 7.305482193230725E-03 RR= 2.729871317751686E-06
+2458426.500000000 = A.D. 2018-Nov-04 00:00:00.0000 TDB 
+ X =-3.073299257573673E-04 Y = 7.301424024105806E-03 Z =-6.868466250491560E-05
+ VX=-7.638224732918901E-06 VY= 2.412496201957238E-06 VZ= 1.910231111640059E-07
+ LT= 4.220871214249078E-05 RG= 7.308211959564314E-03 RR= 2.729668011762070E-06
+2458427.500000000 = A.D. 2018-Nov-05 00:00:00.0000 TDB 
+ X =-3.149694277600308E-04 Y = 7.303832495718353E-03 Z =-6.849360371580846E-05
+ VX=-7.640780947249750E-06 VY= 2.404453629641378E-06 VZ= 1.910946028379160E-07
+ LT= 4.222447689949686E-05 RG= 7.310941542625330E-03 RR= 2.729504822719835E-06
+2458428.500000000 = A.D. 2018-Nov-06 00:00:00.0000 TDB 
+ X =-3.226114910880439E-04 Y = 7.306232944629678E-03 Z =-6.830247301231880E-05
+ VX=-7.643347470453426E-06 VY= 2.396450855256466E-06 VZ= 1.911669557423547E-07
+ LT= 4.224024083068493E-05 RG= 7.313670982700391E-03 RR= 2.729382109830968E-06
+2458429.500000000 = A.D. 2018-Nov-07 00:00:00.0000 TDB 
+ X =-3.302561263134525E-04 Y = 7.308625410826568E-03 Z =-6.811126948328691E-05
+ VX=-7.645924832216642E-06 VY= 2.388488278664154E-06 VZ= 1.912402723301869E-07
+ LT= 4.225600417116564E-05 RG= 7.316400320497642E-03 RR= 2.729300359687671E-06
+2458430.500000000 = A.D. 2018-Nov-08 00:00:00.0000 TDB 
+ X =-3.379033445516245E-04 Y = 7.311009934764696E-03 Z =-6.791999210677558E-05
+ VX=-7.648513593281285E-06 VY= 2.380566440333157E-06 VZ= 1.913146722555602E-07
+ LT= 4.227176715926750E-05 RG= 7.319129597282386E-03 RR= 2.729260202749930E-06
+2458431.500000000 = A.D. 2018-Nov-09 00:00:00.0000 TDB 
+ X =-3.455531575045612E-04 Y = 7.313386557516783E-03 Z =-6.772863973113570E-05
+ VX=-7.651114370889670E-06 VY= 2.372686036292835E-06 VZ= 1.913902959215108E-07
+ LT= 4.228753003741498E-05 RG= 7.321858855029124E-03 RR= 2.729262429607605E-06
+2458432.500000000 = A.D. 2018-Nov-10 00:00:00.0000 TDB 
+ X =-3.532055775326052E-04 Y = 7.315755320935059E-03 Z =-6.753721105229864E-05
+ VX=-7.653727870288531E-06 VY= 2.364847931594089E-06 VZ= 1.914673084595270E-07
+ LT= 4.230329305309814E-05 RG= 7.324588136589422E-03 RR= 2.729308006218060E-06
+2458433.500000000 = A.D. 2018-Nov-11 00:00:00.0000 TDB 
+ X =-3.608606177614262E-04 Y = 7.318116267825669E-03 Z =-6.734570458687517E-05
+ VX=-7.656354923056730E-06 VY= 2.357053170684668E-06 VZ= 1.915459040789252E-07
+ LT= 4.231905645992305E-05 RG= 7.327317485873815E-03 RR= 2.729398086617318E-06
+2458434.500000000 = A.D. 2018-Nov-12 00:00:00.0000 TDB 
+ X =-3.685182922286298E-04 Y = 7.320469442132306E-03 Z =-6.715411864087799E-05
+ VX=-7.658996532448937E-06 VY= 2.349302983753116E-06 VZ= 1.916263107311168E-07
+ LT= 4.233482051873028E-05 RG= 7.330046948045450E-03 RR= 2.729534022224438E-06
+2458435.500000000 = A.D. 2018-Nov-13 00:00:00.0000 TDB 
+ X =-3.761786160856023E-04 Y = 7.322814889120321E-03 Z =-6.696245127335632E-05
+ VX=-7.661653929214924E-06 VY= 2.341598784103484E-06 VZ= 1.917087949969453E-07
+ LT= 4.235058549873704E-05 RG= 7.332776569717835E-03 RR= 2.729717363053991E-06
+2458436.500000000 = A.D. 2018-Nov-14 00:00:00.0000 TDB 
+ X =-3.838416058508992E-04 Y = 7.325152655557074E-03 Z =-6.677070025562497E-05
+ VX=-7.664328629443789E-06 VY= 2.333942159134401E-06 VZ= 1.917936666360385E-07
+ LT= 4.236635167867959E-05 RG= 7.335506399152663E-03 RR= 2.729949853043819E-06
+2458437.500000000 = A.D. 2018-Nov-15 00:00:00.0000 TDB 
+ X =-3.915072797323727E-04 Y = 7.327482789874099E-03 Z =-6.657886302569645E-05
+ VX=-7.667022507707488E-06 VY= 2.326334844317170E-06 VZ= 1.918812831474711E-07
+ LT= 4.238211934788042E-05 RG= 7.338236486444569E-03 RR= 2.730233409648157E-06
+2458438.500000000 = A.D. 2018-Nov-16 00:00:00.0000 TDB 
+ X =-3.991756580221917E-04 Y = 7.329805342295837E-03 Z =-6.638693663878187E-05
+ VX=-7.669737870523810E-06 VY= 2.318778681437777E-06 VZ= 1.919720530715672E-07
+ LT= 4.239788880715626E-05 RG= 7.340966883678356E-03 RR= 2.730570088277076E-06
+2458439.500000000 = A.D. 2018-Nov-17 00:00:00.0000 TDB 
+ X =-4.068467635664670E-04 Y = 7.332120364916479E-03 Z =-6.619491771521968E-05
+ VX=-7.672477531895037E-06 VY= 2.311275555678123E-06 VZ= 1.920664377505689E-07
+ LT= 4.241366036946422E-05 RG= 7.343697645040869E-03 RR= 2.730962026276993E-06
+2458440.500000000 = A.D. 2018-Nov-18 00:00:00.0000 TDB 
+ X =-4.145206223100834E-04 Y = 7.334427911701250E-03 Z =-6.600280238769738E-05
+ VX=-7.675244887171692E-06 VY= 2.303827306763784E-06 VZ= 1.921649508140823E-07
+ LT= 4.242943436015311E-05 RG= 7.346428826864501E-03 RR= 2.731411361507796E-06
+2458441.500000000 = A.D. 2018-Nov-19 00:00:00.0000 TDB 
+ X =-4.221972639113970E-04 Y = 7.336728038384452E-03 Z =-6.581058625054126E-05
+ VX=-7.678043977322259E-06 VY= 2.296435610906250E-06 VZ= 1.922681543954523E-07
+ LT= 4.244521111666180E-05 RG= 7.349160487574991E-03 RR= 2.731920121799396E-06
+2458442.500000000 = A.D. 2018-Nov-20 00:00:00.0000 TDB 
+ X =-4.298767224120094E-04 Y = 7.339020802234310E-03 Z =-6.561826431486819E-05
+ VX=-7.680879532859351E-06 VY= 2.289101832616882E-06 VZ= 1.923766510175910E-07
+ LT= 4.246099098749058E-05 RG= 7.351892687513287E-03 RR= 2.732490083678775E-06
+2458443.500000000 = A.D. 2018-Nov-21 00:00:00.0000 TDB 
+ X =-4.375590369352219E-04 Y = 7.341306261655398E-03 Z =-6.542583097441004E-05
+ VX=-7.683756985181125E-06 VY= 2.281826848667624E-06 VZ= 1.924910702112324E-07
+ LT= 4.247677433027026E-05 RG= 7.354625488601247E-03 RR= 2.733122601762338E-06
+2458444.500000000 = A.D. 2018-Nov-22 00:00:00.0000 TDB 
+ X =-4.452442523743460E-04 Y = 7.343584475603510E-03 Z =-6.523327998764440E-05
+ VX=-7.686682432932996E-06 VY= 2.274610850520051E-06 VZ= 1.926120492451456E-07
+ LT= 4.249256150877304E-05 RG= 7.357358953824069E-03 RR= 2.733818414122217E-06
+2458445.500000000 = A.D. 2018-Nov-23 00:00:00.0000 TDB 
+ X =-4.529324200201294E-04 Y = 7.345855502796660E-03 Z =-6.504060448219686E-05
+ VX=-7.689662552179575E-06 VY= 2.267453136439307E-06 VZ= 1.927402078564889E-07
+ LT= 4.250835288875277E-05 RG= 7.360093146510083E-03 RR= 2.734577433773311E-06
+$$EOE
+*******************************************************************************
+Coordinate system description:
+
+  Ecliptic and Mean Equinox of Reference Epoch
+
+    Reference epoch: J2000.0
+    XY-plane: plane of the Earth's orbit at the reference epoch
+              Note: obliquity of 84381.448 arcseconds wrt ICRF equator (IAU76)
+    X-axis  : out along ascending node of instantaneous plane of the Earth's
+              orbit and the Earth's mean equator at the reference epoch
+    Z-axis  : perpendicular to the xy-plane in the directional (+ or -) sense
+              of Earth's north pole at the reference epoch.
+
+  Symbol meaning [1 au= 149597870.700 km, 1 day= 86400.0 s]:
+
+    JDTDB    Julian Day Number, Barycentric Dynamical Time
+      X      X-component of position vector (au)                               
+      Y      Y-component of position vector (au)                               
+      Z      Z-component of position vector (au)                               
+      VX     X-component of velocity vector (au/day)                           
+      VY     Y-component of velocity vector (au/day)                           
+      VZ     Z-component of velocity vector (au/day)                           
+      LT     One-way down-leg Newtonian light-time (day)                       
+      RG     Range; distance from coordinate center (au)                       
+      RR     Range-rate; radial velocity wrt coord. center (au/day)            
+
+Geometric states/elements have no aberrations applied.
+
+ Computations by ...
+     Solar System Dynamics Group, Horizons On-Line Ephemeris System
+     4800 Oak Grove Drive, Jet Propulsion Laboratory
+     Pasadena, CA  91109   USA
+     Information: http://ssd.jpl.nasa.gov/
+     Connect    : telnet://ssd.jpl.nasa.gov:6775  (via browser)
+                  http://ssd.jpl.nasa.gov/?horizons
+                  telnet ssd.jpl.nasa.gov 6775    (via command-line)
+     Author     : Jon.D.Giorgini@jpl.nasa.gov
+*******************************************************************************
+[K[?1l> >>> Select... [A]gain, [N]ew-case, [F]tp, [M]ail, [R]edisplay, ? : x
+                                                                               
+     ___    _____     ___                                                      
+    /_ /|  /____/ \  /_ /|       Horizons On-line Ephemeris System v4.51       
+    | | | |  __ \ /| | | |       Solar System Dynamics Group                   
+ ___| | | | |__) |/  | | |__     Jet Propulsion Laboratory                     
+/___| | | |  ___/    | |/__ /|   Pasadena, CA, USA                             
+|_____|/  |_|/       |_____|/                                                  
+ 
