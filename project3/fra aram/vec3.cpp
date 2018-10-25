@@ -24,6 +24,14 @@ vec3::vec3(double x, double y, double z)
     components[2] = z;
 }
 
+vec3 &vec3::operator =(const vec3 &copy)
+{
+    components[0] = copy.x();
+    components[1] = copy.y();
+    components[2] = copy.z();
+    return *this;
+}
+
 void vec3::print()
 {
     // Will print matlab syntax vector. Output will be like: [2.09, 5.3, 9.1];
@@ -73,6 +81,12 @@ vec3 &vec3::operator+=(double rhs)
     components[1] += rhs;
     components[2] += rhs;
     return *this;
+}
+
+void vec3::zeros(){
+    components[0] = 0.0;
+    components[1] = 0.0;
+    components[2] = 0.0;
 }
 
 vec3 &vec3::operator+=(vec3 rhs)

@@ -14,6 +14,7 @@ public:
 
     void print();
     void print(std::string name);
+    void zeros();
     vec3 cross(vec3 otherVector);
     double dot(vec3 otherVector);
     double lengthSquared();
@@ -28,6 +29,9 @@ public:
 
     double &operator()(int index) { return components[index]; } // Allows access like myVector(0)
     double &operator[](int index) { return components[index]; } // Allows access like myVector[0]
+
+    vec3 &operator =(const vec3 &copy);
+
     vec3 &operator+=(double rhs); // Componentwise addition with scalar
     vec3 &operator+=(vec3 rhs);   // Componentwise addition with vector
     vec3 &operator*=(double rhs); // Componentwise multiplication with scalar
