@@ -64,3 +64,28 @@ void write_to_file(ofstream &file_name, int n_spins, int n_mc, double temperatur
     file_name << setw(15) << setprecision(8) << xi;
     file_name << endl;
 } // end output function
+
+void init_matrix(mat& matrix, int size, string option){
+
+    // Ordered initialization
+    if(option == "not_random") matrix = ones(size, size);
+
+    // Random initialization
+
+    if(option == "random"){
+        matrix = ones(size, size);
+        random_device rd;
+        mt19937_64 gen(rd());
+        uniform_real_distribution<double> dist(0.0, 1.0);
+        for(int x = 0; x < size; x++){
+            for(int y = 0; y < size; y++){
+                if(dist(gen) < 0.5){
+                    matrix(x,y) = -1;
+                }
+                else{
+                    matrix(x,y) = 1;
+                }
+            }
+        }
+    }
+}
