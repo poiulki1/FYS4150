@@ -9,9 +9,10 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    int n_spins, n_mc, n_temp, my_rank, numprocs;
+    int n_spins, n_mc, n_temp, my_rank, numprocs, mc_boundry;
     double temp_max, temp_min, E, M, comp_fac[17];
     ofstream output_file, output_file_expE_temp1, output_file_expE_temp24;
+    ofstream output_file_accepted, output_accepted_mc_temp1, output_accepted_mc_temp24;
     vec quantities_local, quantities_global;
     mat s_matrix;
 
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     // Handle arguments
-    int arg_lim = 6;
+    int arg_lim = 7;
 
     if(my_rank == 0 && argc < arg_lim){
         cout << "Error: too few arguments! \n";
@@ -36,9 +37,14 @@ int main(int argc, char *argv[])
         n_temp = stoi(argv[3]);
         temp_max = stod(argv[4]);
         temp_min = stod(argv[5]);
-        output_file.open(argv[6]);
-        output_file_expE_temp1.open("4C_temp1_random.txt");
-        output_file_expE_temp24.open("4C_temp24_random.txt");
+        mc_boundry = stoi(argv[6]);
+        output_file.open(argv[7]);
+
+        output_file_expE_temp1.open("4C_temp1_not_random.txt");
+        output_file_expE_temp24.open("4C_temp24_not_random.txt");
+        output_file_accepted.open("accepted_temp_random.txt");
+        output_accepted_mc_temp1.open("accepted_mc_not_random_temp1.txt");
+        output_accepted_mc_temp24.open("accepted_mc_not_random_temp24.txt");
     }
 
     if(my_rank == 0){
@@ -70,14 +76,21 @@ int main(int argc, char *argv[])
 
 
     // Initialize the spin matrix
-    //init_matrix(s_matrix, n_spins, "not_random");
-    init_matrix(s_matrix, n_spins, "random");
+    init_matrix(s_matrix, n_spins, "not_random");
+    //init_matrix(s_matrix, n_spins, "random");
 
-
+    for(int kk = 50; kk <= n_mc; kk += 50){
+        float n_mc_4C = kk;
+        int n_accepted = 0;
     // Finding the temperature step and entering the temperature loop
     // Inside the loop, initialize the E and M, additionaly precalculating comp_fac = delta E needed in the Metropolis algo
     double temp_step = (temp_max - temp_min)/n_temp;
     for(double temp = temp_min; temp <= temp_max; temp += temp_step){
+
+        //4C: accepted vs mc_cycles
+        //if(temp == 1) output_accepted_mc_temp1 << setw(15) << n_mc_4C;
+        //if(temp == 2.4) output_accepted_mc_temp24 << setw(15) << n_mc_4C;
+
         // Quantities vector will store expected values of energy and magnetization
         quantities_global = zeros(5);
         quantities_local = zeros(5);
@@ -92,30 +105,45 @@ int main(int argc, char *argv[])
         // initializing for different temp
         initialize(n_spins, temp, s_matrix, E, M);
 
-        for(int mc_step = 0; mc_step <= n_mc; mc_step++){ // Without MPI
+        for(int mc_step = 0; mc_step <= n_mc_4C; mc_step++){ // Without MPI
         //for(int mc_step = mc_local_start; mc_step < mc_local_stop; mc_step++){
             // Metropolis algorithm
-            metropolis(n_spins, s_matrix, E, M, comp_fac);
-            // Update expectation values
-            quantities_local[0] += E;
-            quantities_local[1] += E*E;
-            quantities_local[2] += M;
-            quantities_local[3] += M*M;
-            quantities_local[4] += fabs(M);
-            // Writing to file each 100 step, first column=mc steps, second=expected E, third=expected |M| (task 4c)
-            if(mc_step != 0 && mc_step % 100 == 0 && temp == 1.0){
+            int temp_val = metropolis(n_spins, s_matrix, E, M, comp_fac);
+            n_accepted += temp_val;
+
+            // Update expectation values, starting from mc_boundry which was found in 4C, equalibrium point ish
+            if(mc_step > mc_boundry){
+                cout << "MC step: " << mc_step << " energy: " << E << endl;
+                /*
+                quantities_local[0] += E;
+                quantities_local[1] += E*E;
+                quantities_local[2] += M;
+                quantities_local[3] += M*M;
+                quantities_local[4] += fabs(M);*/
+            }
+            //4C: finding equalibrium for different initial states and different temp
+            /*// Writing to file each 50 step, first column=mc steps, second=expected E, third=expected |M| (task 4c)
+            if(mc_step != 0 && mc_step % 50 == 0 && temp == 1.0){
                 output_file_expE_temp1 << setw(15) << mc_step;
                 output_file_expE_temp1 << setw(15) << setprecision(8) << (quantities_local[0]/((double) mc_step*n_spins*n_spins));
                 output_file_expE_temp1 << setw(15) << setprecision(8) << (quantities_local[4]/((double) mc_step*n_spins*n_spins));
                 output_file_expE_temp1 << endl;
             }
-            if(mc_step != 0 && mc_step % 100 == 0 && temp == 2.4){
+            if(mc_step != 0 && mc_step % 50 == 0 && temp == 2.4){
                 output_file_expE_temp24 << setw(15) << mc_step;
                 output_file_expE_temp24 << setw(15) << setprecision(8) << (quantities_local[0]/((double) mc_step*n_spins*n_spins));
                 output_file_expE_temp24 << setw(15) << setprecision(8) << (quantities_local[4]/((double) mc_step*n_spins*n_spins));
                 output_file_expE_temp24 << endl;
-            }
+            }*/
         }
+        //4C: accepted vs mc_cycles
+        //if(temp == 1) output_accepted_mc_temp1 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
+        //if(temp == 2.4) output_accepted_mc_temp24 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
+
+        //4C: accepted vs temp
+        //output_file_accepted << setw(15) << n_accepted/((float)(n_mc*n_spins*n_spins));
+        //output_file_accepted << setw(15) << temp << endl;
+
         /*
         // quantities are armadillo vectors/double pointer, index [0] tells about the start point only
         MPI_Reduce(&quantities_local[0], &quantities_global[0], 5, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -128,6 +156,7 @@ int main(int argc, char *argv[])
             //cout << "global: " << quantities_global << "temp: " << temp << endl;
             write_to_file(output_file, n_spins, n_mc, temp, quantities_global);
         }*/
+    }
     }
     MPI_Finalize();
     return 0;

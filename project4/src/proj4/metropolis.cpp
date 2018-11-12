@@ -11,26 +11,27 @@ void initialize(int n_spins, double temp, mat& s_matrix, double& E, double& M){
 }
 
 
-void metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fac){
+int metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fac){
 
     random_device rd;
     mt19937_64 gen(rd());
     uniform_real_distribution<double> dist(0.0, 1.0);
-
+    int n_accepted;
     for(int i = 0; i < n_spins; i++){
         for(int j = 0; j < n_spins; j++){
             int x = int(dist(gen)*double(n_spins));
             int y = int(dist(gen)*double(n_spins));
 
             int dE = 2*s_matrix(x,y)*(s_matrix(periodic(x+1,n_spins), y) + s_matrix(periodic(x-1,n_spins), y) + s_matrix(x, periodic(y+1,n_spins)) + s_matrix(x, periodic(y-1,n_spins)));
-
             if(dist(gen) <= comp_fac[int(dE)+8]){
+                n_accepted += 1;
                 s_matrix(x,y) *= -1;
                 E += (double) dE;
                 M += (double) 2*s_matrix(x,y);
             }
         }
     }
+    return n_accepted;
 }
 
 
