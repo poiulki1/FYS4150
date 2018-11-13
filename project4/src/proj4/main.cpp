@@ -2,6 +2,7 @@
 #include <armadillo>
 #include <mpi.h>
 #include "metropolis.h"
+#include "time.h"
 
 using namespace arma;
 using namespace std;
@@ -13,6 +14,7 @@ int main(int argc, char *argv[])
     double temp_max, temp_min, E, M, comp_fac[17];
     ofstream output_file, output_file_expE_temp1, output_file_expE_temp24;
     ofstream output_file_accepted, output_accepted_mc_temp1, output_accepted_mc_temp24;
+    ofstream output_energy_dist_temp1, output_energy_dist_temp24;
     vec quantities_local, quantities_global;
     mat s_matrix;
 
@@ -39,16 +41,19 @@ int main(int argc, char *argv[])
         temp_min = stod(argv[5]);
         mc_boundry = stoi(argv[6]);
         output_file.open(argv[7]);
-
+        //opening files, changing the names manually according to initializing and temperature
         output_file_expE_temp1.open("4C_temp1_not_random.txt");
         output_file_expE_temp24.open("4C_temp24_not_random.txt");
         output_file_accepted.open("accepted_temp_random.txt");
         output_accepted_mc_temp1.open("accepted_mc_not_random_temp1.txt");
         output_accepted_mc_temp24.open("accepted_mc_not_random_temp24.txt");
+        output_energy_dist_temp1.open("energy_dist_temp1.txt");
+        output_energy_dist_temp24.open("energy_dist_temp24.txt");
     }
 
-    if(my_rank == 0){
+    /*if(my_rank == 0){
         // Writing the first line in data file (only for orientation while developing)
+        output_file << setw(15) << "MC step";
         output_file << setw(15) << "Temperature";
         output_file << setw(15) << "<E>";
         output_file << setw(15) << "<E2>";
@@ -56,10 +61,11 @@ int main(int argc, char *argv[])
         output_file << setw(15) << "Cv";
         output_file << setw(15) << "<M>";
         output_file << setw(15) << "<M2>";
+        output_file << setw(15) << "<|M|>";
         output_file << setw(15) << "var[M]";
         output_file << setw(15) << "Xi";
         output_file << endl;
-    }
+    }*/
 
     // Brodcast shared-variables to all the nodes
     MPI_Bcast(&n_spins, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -75,13 +81,14 @@ int main(int argc, char *argv[])
     if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;
 
 
-    // Initialize the spin matrix
+    // Initialize the spin matrix, manually comment-out the unused initialization
     init_matrix(s_matrix, n_spins, "not_random");
     //init_matrix(s_matrix, n_spins, "random");
 
-    for(int kk = 50; kk <= n_mc; kk += 50){
-        float n_mc_4C = kk;
-        int n_accepted = 0;
+    //for(int kk = 4; kk <= n_mc; kk++){
+        //int n_mc_4C = pow(10,kk);
+        //int n_accepted = 0;
+
     // Finding the temperature step and entering the temperature loop
     // Inside the loop, initialize the E and M, additionaly precalculating comp_fac = delta E needed in the Metropolis algo
     double temp_step = (temp_max - temp_min)/n_temp;
@@ -105,22 +112,32 @@ int main(int argc, char *argv[])
         // initializing for different temp
         initialize(n_spins, temp, s_matrix, E, M);
 
-        for(int mc_step = 0; mc_step <= n_mc_4C; mc_step++){ // Without MPI
-        //for(int mc_step = mc_local_start; mc_step < mc_local_stop; mc_step++){
+        clock_t start_time, finish_time;
+        double time_used;
+
+        start_time = clock();
+
+        //for(int mc_step = 0; mc_step <= n_mc; mc_step++){ // Without MPI
+        for(int mc_step = mc_local_start; mc_step < mc_local_stop; mc_step++){
             // Metropolis algorithm
             int temp_val = metropolis(n_spins, s_matrix, E, M, comp_fac);
-            n_accepted += temp_val;
+            //n_accepted += temp_val;
 
             // Update expectation values, starting from mc_boundry which was found in 4C, equalibrium point ish
-            if(mc_step > mc_boundry){
-                cout << "MC step: " << mc_step << " energy: " << E << endl;
-                /*
+            //if(mc_step > mc_boundry){
+                //cout << "temp: " << temp << "MC step: " << mc_step << " energy: " << E << endl;
+                //4D: Energy histogram
+                //if(temp == 1) output_energy_dist_temp1 << setw(15) << setprecision(6) << E/((float) n_spins*n_spins) << endl;
+                //if(temp == 2.4) output_energy_dist_temp24 << setw(15) << setprecision(6) << E/((float) n_spins*n_spins) << endl;
+
+
                 quantities_local[0] += E;
                 quantities_local[1] += E*E;
                 quantities_local[2] += M;
                 quantities_local[3] += M*M;
-                quantities_local[4] += fabs(M);*/
-            }
+                quantities_local[4] += fabs(M);
+            //}
+
             //4C: finding equalibrium for different initial states and different temp
             /*// Writing to file each 50 step, first column=mc steps, second=expected E, third=expected |M| (task 4c)
             if(mc_step != 0 && mc_step % 50 == 0 && temp == 1.0){
@@ -136,6 +153,12 @@ int main(int argc, char *argv[])
                 output_file_expE_temp24 << endl;
             }*/
         }
+        finish_time = clock();
+        time_used = ((double) (finish_time - start_time))/CLOCKS_PER_SEC;
+        cout << "\n Time used " << time_used << " s for a MC simulation with " << n_mc << " cycles proc#" << my_rank << endl;
+
+        //write_to_file(output_file, n_spins, n_mc, temp, quantities_local);
+
         //4C: accepted vs mc_cycles
         //if(temp == 1) output_accepted_mc_temp1 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
         //if(temp == 2.4) output_accepted_mc_temp24 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
@@ -144,7 +167,7 @@ int main(int argc, char *argv[])
         //output_file_accepted << setw(15) << n_accepted/((float)(n_mc*n_spins*n_spins));
         //output_file_accepted << setw(15) << temp << endl;
 
-        /*
+
         // quantities are armadillo vectors/double pointer, index [0] tells about the start point only
         MPI_Reduce(&quantities_local[0], &quantities_global[0], 5, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
@@ -152,11 +175,8 @@ int main(int argc, char *argv[])
 
         // Write expectation values to file for the according temperature
         if(my_rank == 0){
-            //cout << "hei fra procs nr " << my_rank << endl;
-            //cout << "global: " << quantities_global << "temp: " << temp << endl;
             write_to_file(output_file, n_spins, n_mc, temp, quantities_global);
-        }*/
-    }
+        }
     }
     MPI_Finalize();
     return 0;

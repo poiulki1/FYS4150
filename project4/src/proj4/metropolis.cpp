@@ -54,6 +54,7 @@ void write_to_file(ofstream &file_name, int n_spins, int n_mc, double temperatur
     double xi = var_Mabs/temperature;
 
     file_name << setiosflags(ios::showpoint | ios::uppercase);
+    file_name << setw(15) << n_mc;
     file_name << setw(15) << setprecision(8) << temperature;
     file_name << setw(15) << setprecision(8) << exp_E*s_norm;
     file_name << setw(15) << setprecision(8) << exp_E2*s_norm;
@@ -61,6 +62,7 @@ void write_to_file(ofstream &file_name, int n_spins, int n_mc, double temperatur
     file_name << setw(15) << setprecision(8) << Cv;
     file_name << setw(15) << setprecision(8) << exp_M*s_norm;
     file_name << setw(15) << setprecision(8) << exp_M2*s_norm;
+    file_name << setw(15) << setprecision(8) << exp_Mabs*s_norm;
     file_name << setw(15) << setprecision(8) << var_M;
     file_name << setw(15) << setprecision(8) << xi;
     file_name << endl;
