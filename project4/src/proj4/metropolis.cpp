@@ -11,10 +11,10 @@ void initialize(int n_spins, double temp, mat& s_matrix, double& E, double& M){
 }
 
 
-int metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fac){
+int metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fac, int my_rank){
 
     random_device rd;
-    mt19937_64 gen(rd());
+    mt19937_64 gen(rd()+my_rank);
     uniform_real_distribution<double> dist(0.0, 1.0);
     int n_accepted;
     for(int i = 0; i < n_spins; i++){
@@ -37,7 +37,7 @@ int metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fa
 
 void write_to_file(ofstream &file_name, int n_spins, int n_mc, double temperature, vec arr){
     double mc_norm = 1/((double) (n_mc)); // divided by total number of cycles
-    double s_norm = 1.0/(n_spins*n_spins);
+    double s_norm = 1.0/double(n_spins*n_spins);
 
     double exp_E = arr[0]*mc_norm;
     double exp_E2 = arr[1]*mc_norm;

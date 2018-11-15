@@ -73,12 +73,13 @@ int main(int argc, char *argv[])
     MPI_Bcast(&n_temp, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&temp_max, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&temp_min, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
+    MPI_Bcast(&mc_boundry, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    /*
     // Partitioning the MC-cycles among the nodes
     int n_partitions = n_mc/numprocs;
     int mc_local_start = (my_rank * n_partitions) + 1;
     int mc_local_stop = (my_rank+1) * n_partitions;
-    if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;
+    if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;*/
 
 
     // Initialize the spin matrix, manually comment-out the unused initialization
@@ -115,28 +116,33 @@ int main(int argc, char *argv[])
         clock_t start_time, finish_time;
         double time_used;
 
+        // Partitioning the MC-cycles among the nodes
+        int n_partitions = n_mc/numprocs;
+        int mc_local_start = (my_rank * n_partitions) + 1;
+        int mc_local_stop = (my_rank+1) * n_partitions;
+        if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;
+
         start_time = clock();
 
         //for(int mc_step = 0; mc_step <= n_mc; mc_step++){ // Without MPI
         for(int mc_step = mc_local_start; mc_step < mc_local_stop; mc_step++){
             // Metropolis algorithm
-            int temp_val = metropolis(n_spins, s_matrix, E, M, comp_fac);
+            int temp_val = metropolis(n_spins, s_matrix, E, M, comp_fac, my_rank);
             //n_accepted += temp_val;
 
             // Update expectation values, starting from mc_boundry which was found in 4C, equalibrium point ish
-            //if(mc_step > mc_boundry){
+            if(mc_step > mc_boundry + mc_local_start){
                 //cout << "temp: " << temp << "MC step: " << mc_step << " energy: " << E << endl;
                 //4D: Energy histogram
                 //if(temp == 1) output_energy_dist_temp1 << setw(15) << setprecision(6) << E/((float) n_spins*n_spins) << endl;
                 //if(temp == 2.4) output_energy_dist_temp24 << setw(15) << setprecision(6) << E/((float) n_spins*n_spins) << endl;
-
 
                 quantities_local[0] += E;
                 quantities_local[1] += E*E;
                 quantities_local[2] += M;
                 quantities_local[3] += M*M;
                 quantities_local[4] += fabs(M);
-            //}
+            }
 
             //4C: finding equalibrium for different initial states and different temp
             /*// Writing to file each 50 step, first column=mc steps, second=expected E, third=expected |M| (task 4c)
@@ -167,16 +173,18 @@ int main(int argc, char *argv[])
         //output_file_accepted << setw(15) << n_accepted/((float)(n_mc*n_spins*n_spins));
         //output_file_accepted << setw(15) << temp << endl;
 
-
+        //cout << "local proc#" << my_rank << endl;
+        //quantities_local.print();
         // quantities are armadillo vectors/double pointer, index [0] tells about the start point only
         MPI_Reduce(&quantities_local[0], &quantities_global[0], 5, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-        //cout << "local: " << quantities_local << "from rank: " << my_rank << "temp: " << temp << endl;
-
         // Write expectation values to file for the according temperature
+        //cout << "Har du husket local->gloabl for MPI? og reduce og loop grense?" << endl;
         if(my_rank == 0){
-            write_to_file(output_file, n_spins, n_mc, temp, quantities_global);
+            write_to_file(output_file, n_spins, n_mc-(mc_boundry*numprocs), temp, quantities_global); //husk local til global med MPI
         }
+        //cout << "global: " << endl;
+        //quantities_global.print();
     }
     MPI_Finalize();
     return 0;
