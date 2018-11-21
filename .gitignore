@@ -10,3 +10,4 @@ auto/
 *.cpp#
 *build*
 report/
+python/
