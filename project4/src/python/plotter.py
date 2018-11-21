@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def max_point(arr):
-    #temp = np.loadtxt("4E_data_L40_zoom.txt")[:,1]
-    temp = np.loadtxt("4E_data_L40.txt")[:,1]
+    temp = np.loadtxt("4E_data_L40_zoom.txt")[:,1]
+    #temp = np.loadtxt("4E_data_L40.txt")[:,1]
     x_max = temp[np.argmax(arr)]
     y_max = arr.max()
     return x_max, y_max
@@ -54,8 +54,9 @@ def plot_4e(arg="not_zoom"):
     plt.plot(temp, mean_E80, label="L=80")
     plt.plot(temp, mean_E100, label="L=100")
     plt.ylabel("<E> [J]")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.legend(loc="best")
+    #plt.savefig("4e_meanE_"+arg+".pdf")
     
     plt.figure()
     plt.title("Mean absolute magnetisation per spin")
@@ -64,8 +65,9 @@ def plot_4e(arg="not_zoom"):
     plt.plot(temp, mean_Mabs80, label="L=80")
     plt.plot(temp, mean_Mabs100, label="L=100")
     plt.ylabel("<|M|> [J/T]")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.legend(loc="best")
+    #plt.savefig("4e_meanM_"+arg+".pdf")
     
     plt.figure()
     plt.title("Heat capacity per spin")
@@ -78,8 +80,13 @@ def plot_4e(arg="not_zoom"):
     plt.plot(temp, cv100, label="L=100")
     plt.plot(max_point(cv100)[0], max_point(cv100)[1], "o")
     plt.ylabel("$C_{v}$ [J/K]")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.legend(loc="best")
+    plt.savefig("4e_cv_"+arg+".pdf")
+    print("L=", 40, " Tc=", max_point(cv40)[0])
+    print("L=", 60, " Tc=", max_point(cv60)[0])
+    print("L=", 80, " Tc=", max_point(cv80)[0])
+    print("L=", 100, " Tc=", max_point(cv100)[0])
     
     plt.figure()
     plt.title("Magnetic susceptibility per spin")
@@ -92,9 +99,14 @@ def plot_4e(arg="not_zoom"):
     plt.plot(temp, xi100, label="L=100")
     plt.plot(max_point(xi100)[0], max_point(xi100)[1], "o")
     plt.ylabel("$\\chi$ [$Js^{2}$]")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.legend(loc="best")
-    plt.show()
+    plt.savefig("4e_xi_"+arg+".pdf")
+    print "L=", 40, " Tc=", max_point(xi40)[0]
+    print "L=", 60, " Tc=", max_point(xi60)[0]
+    print "L=", 80, " Tc=", max_point(xi80)[0]
+    print "L=", 100, " Tc=", max_point(xi100)[0]
+#    plt.show()
 
 def analytic_cv(temp):
     k = 1.0
@@ -118,10 +130,10 @@ def plot_4b_cv(filename):
     cv4 = data[:40,5]
     cv5 = data[40:80,5]
     cv6 = data[80:120,5]
-    #cv7 = data[120:160,5]
+    cv7 = data[120:160,5]
     plt.figure()
     plt.title("Heat capacity per spin with $10^{4}$ MC cycles")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.ylabel("$C_{v}$ [J/K]")
     plt.plot(temp, cv_analytic,"--", label="analytic")
     plt.plot(temp, cv4, label="numeric")
@@ -129,7 +141,7 @@ def plot_4b_cv(filename):
     #plt.savefig("4b_cv_mc4.pdf")
     plt.figure()
     plt.title("Heat capacity per spin with $10^{5}$ MC cycles")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.ylabel("$C_{v}$ [J/K]")
     plt.plot(temp, cv_analytic,"--", label="analytic")
     plt.plot(temp, cv5, label="numeric")
@@ -137,20 +149,20 @@ def plot_4b_cv(filename):
     #plt.savefig("4b_cv_mc5.pdf")
     plt.figure()
     plt.title("Heat capacity per spin with $10^{6}$ MC cycles")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.ylabel("$C_{v}$ [J/K]")
     plt.plot(temp, cv_analytic, "--",label="analytic")
     plt.plot(temp, cv6, label="numeric")
     plt.legend(loc="best")
     #plt.savefig("4_cv_mc6.pdf")
-    """
+    
     plt.figure()
     plt.title("Heat capacity per spin with $10^{7}$ MC cycles")
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.ylabel("$C_{v}$ [J/K]")
     plt.plot(temp, cv_analytic,"--", label="analytic")
     plt.plot(temp, cv7, label="numeric")
-    plt.legend(loc="best")"""
+    plt.legend(loc="best")
     #plt.savefig("4b_cv_mc7.pdf")
     plt.show()
     
@@ -192,13 +204,15 @@ def plot_accepted_temp(accepted_random, accepted_not_random):
     acc_not_random = not_random[:,0]
 
     plt.figure()
-    plt.xlabel("Temperature [K]")
+    plt.xlabel("Temperature [kT/J]")
     plt.ylabel("Accepted spin flips/total mc cycles")
     plt.plot(temp,acc_random, label="Disordered initial state")
     plt.plot(temp, acc_not_random, label="Ordered initial state")
     plt.title("Accepted spin flips per MC cycle per spin")
     plt.legend(loc="best")
+    #plt.show()
     plt.savefig("4C_accepted_temp.pdf")
+
 
 def plot_accepted_mc(filename_random1, filename_random24, filename_not_random1, \
                      filename_not_random24):
@@ -305,7 +319,7 @@ def plot_mean(filename1, filename2, filename3, filename4):
 
 
 #calling
-plot_4e()#arg="zoom")
+plot_4e(arg="zoom")
 
 #plot_4b_cv("TEST_4b_MPI.txt")
 #plot_4b_cv("4B_data.txt")

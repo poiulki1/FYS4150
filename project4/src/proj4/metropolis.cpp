@@ -19,13 +19,15 @@ int metropolis(int n_spins, mat& s_matrix, double& E, double& M, double *comp_fa
     int n_accepted;
     for(int i = 0; i < n_spins; i++){
         for(int j = 0; j < n_spins; j++){
+            // picking random index
             int x = int(dist(gen)*double(n_spins));
             int y = int(dist(gen)*double(n_spins));
-
+            // calculating dE (no negative sign - acting like x,y spin is flipped)
             int dE = 2*s_matrix(x,y)*(s_matrix(periodic(x+1,n_spins), y) + s_matrix(periodic(x-1,n_spins), y) + s_matrix(x, periodic(y+1,n_spins)) + s_matrix(x, periodic(y-1,n_spins)));
             if(dist(gen) <= comp_fac[int(dE)+8]){
-                n_accepted += 1;
-                s_matrix(x,y) *= -1;
+                n_accepted += 1; // cnt of accepted flips
+                s_matrix(x,y) *= -1; //actually flipping the spin
+                // update quantities
                 E += (double) dE;
                 M += (double) 2*s_matrix(x,y);
             }

@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         output_energy_dist_temp1.open("energy_dist_temp1.txt");
         output_energy_dist_temp24.open("energy_dist_temp24.txt");
     }
-
+    // making analysis part easier by commenting following block out, leaving it here to have the order visible if needed
     /*if(my_rank == 0){
         // Writing the first line in data file (only for orientation while developing)
         output_file << setw(15) << "MC step";
@@ -74,21 +74,17 @@ int main(int argc, char *argv[])
     MPI_Bcast(&temp_max, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&temp_min, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&mc_boundry, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    /*
+
     // Partitioning the MC-cycles among the nodes
     int n_partitions = n_mc/numprocs;
     int mc_local_start = (my_rank * n_partitions) + 1;
     int mc_local_stop = (my_rank+1) * n_partitions;
-    if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;*/
+    if(my_rank == numprocs - 1 && mc_local_stop < n_mc) mc_local_stop = n_mc;
 
 
     // Initialize the spin matrix, manually comment-out the unused initialization
     init_matrix(s_matrix, n_spins, "not_random");
     //init_matrix(s_matrix, n_spins, "random");
-
-    //for(int kk = 4; kk <= n_mc; kk++){
-        //int n_mc_4C = pow(10,kk);
-        //int n_accepted = 0;
 
     // Finding the temperature step and entering the temperature loop
     // Inside the loop, initialize the E and M, additionaly precalculating comp_fac = delta E needed in the Metropolis algo
@@ -163,8 +159,6 @@ int main(int argc, char *argv[])
         time_used = ((double) (finish_time - start_time))/CLOCKS_PER_SEC;
         cout << "\n Time used " << time_used << " s for a MC simulation with " << n_mc << " cycles proc#" << my_rank << endl;
 
-        //write_to_file(output_file, n_spins, n_mc, temp, quantities_local);
-
         //4C: accepted vs mc_cycles
         //if(temp == 1) output_accepted_mc_temp1 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
         //if(temp == 2.4) output_accepted_mc_temp24 << setw(15) << n_accepted/((float) n_mc_4C*n_spins*n_spins) << endl;
@@ -173,18 +167,14 @@ int main(int argc, char *argv[])
         //output_file_accepted << setw(15) << n_accepted/((float)(n_mc*n_spins*n_spins));
         //output_file_accepted << setw(15) << temp << endl;
 
-        //cout << "local proc#" << my_rank << endl;
-        //quantities_local.print();
         // quantities are armadillo vectors/double pointer, index [0] tells about the start point only
         MPI_Reduce(&quantities_local[0], &quantities_global[0], 5, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
         // Write expectation values to file for the according temperature
-        //cout << "Har du husket local->gloabl for MPI? og reduce og loop grense?" << endl;
         if(my_rank == 0){
-            write_to_file(output_file, n_spins, n_mc-(mc_boundry*numprocs), temp, quantities_global); //husk local til global med MPI
+            write_to_file(output_file, n_spins, n_mc-(mc_boundry*numprocs), temp, quantities_global);
+            //write_to_file(output_file, n_spins, n_mc, temp, quantities_global);
         }
-        //cout << "global: " << endl;
-        //quantities_global.print();
     }
     MPI_Finalize();
     return 0;
