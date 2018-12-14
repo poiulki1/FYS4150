@@ -1,0 +1,360 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{a4wide}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[toc,page]{appendix}
+\usepackage[T1]{fontenc}
+\usepackage{cite} % [2,3,4] --> [2--4]
+\usepackage{shadow}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{titling}
+\usepackage{marvosym }
+\usepackage{physics}
+
+\usepackage{subcaption}
+\usepackage[noabbrev]{cleveref}
+\usepackage{wasysym}
+\usepackage{changepage}
+
+
+\renewcommand{\topfraction}{.85}
+\renewcommand{\bottomfraction}{.7}
+\renewcommand{\textfraction}{.15}
+\renewcommand{\floatpagefraction}{.66}
+\renewcommand{\dbltopfraction}{.66}
+\renewcommand{\dblfloatpagefraction}{.66}
+\setcounter{topnumber}{9}
+\setcounter{bottomnumber}{9}
+\setcounter{totalnumber}{20}
+\setcounter{dbltopnumber}{9}
+
+
+\setlength{\droptitle}{-10em}   % This is your set screw
+
+\setcounter{tocdepth}{2}
+
+\lstset{language=c++}
+\lstset{alsolanguage=[90]Fortran}
+\lstset{basicstyle=\small}
+\lstset{backgroundcolor=\color{white}}
+\lstset{frame=single}
+\lstset{stringstyle=\ttfamily}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+\title{FYS3150/4150 - Project 5 \\
+  Disease Modeling with SIRS-model}
+\author{Aram Salihi$^1$, Adam Niewelgowski$^1$ \\
+  \small $^1$Department of Physics, University of Oslo, N-0316 Oslo, Norway}
+\begin{document}
+\maketitle
+\begin{abstract}
+ABSTRAKTEN HER
+\end{abstract}
+\tableofcontents
+\newpage
+\section{Introduction}
+SIR (\textbf{S}usceptible, \textbf{I}nfected, \textbf{R}ecovered) model and its
+variations (SIRS, MSIR, SEIR, etc.)\footnote{$https://en.wikipedia.org/wiki/Compartmental\_models\_in\_epidemiology$}
+is very common method in epidemiology investigations. However this model is not only
+limited to this field of studies (see e.g (REFERANSE til paperen)). The main
+idea is to have three different groups, where objects are moved around between
+groups based on system's conditions.
+% https://www.worldscientific.com/doi/abs/10.1142/S0217984904008031
+Some of the diseases are ``one-time'' diseases, i.e. one can get infected only
+once. However in this project, we will allow the circular transition, it means,
+when one recover, he/she can get infected again, this model is simply called
+SIRS.\@
+
+We will be using two different aproaches to study the spreadning
+of a disease in the small population over time. The first approach is to
+nummerically solve the coupled differential equations which are describing the
+system's states and its transitions. We employ very accurate method; Runge-Kutta
+of fourth order.
+The second approach is the Markov Chain
+Monte Carlo method, where the transition from one state/group to another is
+be based on probability and random numbers.
+
+We wish to study different variations of the model. First we look at short time
+period where the population is fixed (no birth or death). We add vital dynamics
+in the next variant. It means that now we allow births and deaths in the system
+so the population varies. This means that the simulation needs to be run for a
+longer time. We will study how some seasonal diseases impact the model by
+introducing a new osciallating transmission rate. Last thing we wish to
+investigate is to see how the vaccination among the population will change the
+spread of the disease.
+
+\section{Theory}
+In this section we will present the theoretical framework and different types of model used in this
+numerical study. Keep in mind that the algorithm Runge-Kutta is also derived in this section.
+
+\subsection{SIR-model\label{sec:SIR}} In disease modeling the SIR model is one of the simplest
+compartment models. Many complicated models are derived from this simple idea.
+Consider a group of "susceptible" with population $S$, which has the possibility to be infected by a deadly or non-deadly
+disease by someone which carries this infection. The person who carries this infection is in the "infected" group with population $I$.
+We will now assume that there is some possibility (depends on the disease) that one or more from group $I$
+heals and recoveres from the disease, and becomes immune. Thus, the persons who heals moves to the group "recovered" with population $R$.
+These three variables represent the number of people in each compartment at particular time $t$. Keep in mind
+that these three group are time dependent even though the number of people in each
+compartment are constant. Thus the total population in this system follows
+\begin{align}
+  N(t) = S(t) + I(t) + R(t)
+\end{align}
+\subsection{SIRS-model}\label{sec:SIRS}
+We will now consider a bit more general model compared with previous one presented in \eqref{sec:SIR} called SIRS.
+Assuming no babies born into these three group and the possibility of dying being zero.
+We will now consider a group of recovered people from a disease $\mathcal{D}$. We will now assume that these
+people will have the ability to loose immunity from this disease and become susceptible. Meaning that they can
+be infected by someone with disease $\mathcal{D}$.
+We will now have circular system. The idea behind is demonstrated in the figure down below
+\begin{center}
+\begin{tikzpicture}
+\def \n {3}
+\def \l {S,I,R}
+\def \radius {2cm}
+\def \margin {6} % margin in angles, depends on the radius
+
+\foreach \s in {1,...,\n}
+{
+  \draw[->, >=latex] ({360/\n * (\s - 1)+\margin}:\radius)
+    arc ({360/\n * (\s - 1)+\margin}:{360/\n * (\s)-\margin}:\radius);
+}
+\node[draw, circle] at ({360/\n * (1 - 1)}:\radius) {$R$};
+\node[draw, circle] at ({360/\n * (2 - 1)}:\radius) {$S$};
+\node[draw, circle] at ({360/\n * (3 - 1)}:\radius) {$I$};
+\end{tikzpicture}
+\end{center}
+In other words we have consider a case with a closed system. The change in the population for this system is described by following
+coupled differential equations
+\begin{align}
+  \dv{S}{t} &= cR - \frac{aSI}{N} \\
+  \dv{I}{t} &= \frac{aSI}{N} - bI \\
+  \dv{R}{t} &= bI - cR
+  \label{sirs}
+\end{align}
+Where $a$ describes the transmission rate of the disease, $b$ describes the rate of recovary, and $c$
+describes the loss of immunity. The change described by these equations will always keep the
+total population $N(t)$ constant. This can be easily seen when adding $S'$, $I'$ and $R'$ together.
+
+\paragraph{Vital dynamics (open system).}\label{sec:SIRS2} We will now consider a open system. Meaning
+we will have a even more realistic scenario compared with two previous models. We will now introduce
+a death rate which can occour in group $S$, $I$ and $R$. The cause of death is not by the disease itself, but describing
+other reasons such as natural cause of death such as heart attack. We will define this parameter rate as
+$d$. Further we will introduce a death rate of people dying from the disease itself, and call this rate for $d_{i}$.
+To make it even more realistic we will introduce a birth rate parameter $e$. This parameter explains the rate of babies added to the system.
+We will now add a few terms to the differential equations introduced in \eqref{sirs}
+\begin{align*}
+  \dv{S}{t} &= cR - \frac{aSI}{N} - dS + eN\\
+  \dv{I}{t} &= \frac{aSI}{N} - bI - dI - d_{I}I\\
+  \dv{R}{t} &= bI - cR - dR
+\end{align*}
+We will further assume that all babies added to the system are susceptible.
+If we take the sum of the these equation, we will notice that
+\begin{align}
+\dv{S}{t} + \dv{I}{t} + \dv{R}{t} = eN - dR - (d_{i} - d)I
+\end{align}
+From this we can see that the population number $N$ is never constant. It will either decrease or increase depending how the
+factors are behaving with respect to each other.
+Notice that in order to keep a increase in population with this model, $eN$ must dominate
+\begin{align}
+  eN >> dR + (d_{i} + d)I
+\end{align}
+Considering the other case, simulating an apocalypse with deadly disease/infection with a decreasing population, we must have
+\begin{align}
+  eN << dR + (d_{i} + d)I
+\end{align}
+\paragraph{Seasonal variation.}\label{sec:SIRS3} In this variant we wish to study how the
+population is affected by oscillating diseases (e.g influenza). We will
+slightly change the transmition rate $a$ to be time dependend
+\begin{align*}
+  a(t) = A\cos{(\omega t)} + a_{0}
+\end{align*}
+where $a_{0}$ is the average transmission rate, $A$ is the maximum deviation
+from the average and $\omega$ is frequency of oscillation.
+
+\paragraph{Vaccination.}\label{sec:SIRS4}  Here we introduce new constant, $f$,
+which will break our circular model, and allow transition from \textbf{S} to
+\textbf{R} directly. We want to model this constant such that this is time
+depended, indicating the improvment of vaccination so more people will get
+vaccinated with time.
+\begin{align*}
+  \frac{dS}{dt} &= cR - \frac{aSI}{N} - f\\
+  \frac{dI}{dt} &= \frac{aSI}{N} - bI \\
+  \frac{dR}{dt} &= bI - cR + f
+\end{align*}
+In section (REFERANSE til en forklaring av funksjonen til f(t)) we discuss the
+choice of the function.
+
+\subsection{Runge-Kutta 4}
+Runge-Kutta of fourth order is widely used numerical algorithm for solving ordinary differential equations
+,due to its precision which makes it a superior and relatively fast method. As other numerical ODE algorithms it is also based on Taylor expansion theorem.
+The idea behind this method is that it provides intermediate steps to calculate
+$y_{i+1}$.
+Consider a general first order ordinary differential on the form:
+\begin{align}
+  \dv{y}{t} = f(t,y)
+\end{align}
+We wish to solve this ODE, i.e, we want to integrate both sides with respect to $t$.
+Keep in mind that $y$ and $t$ can represent all kind of phenomenas.
+\begin{align}
+  y(t) &= \int f(t,y) dt
+\end{align}
+The idea now is to discretize our solution interval $y \to y_{i}$ and our interval $t \to t_{i}$.
+We want to approximate the next solution $y_{i+1}$ by using the previous solution $y_{i}$ with a
+step of
+\begin{align}
+  \int_{t_{i}}^{t_{i+1}}f(t,y)\dd{t}
+\end{align}
+Thus the equation we want to end up with
+\begin{align}
+  y_{i+1} = y_{i} + \int_{t_{i}}^{t_{i+1}}f(t,y)\dd{t}
+\end{align}
+We now wish to taylor expand our integration interval around a midpoint, thus defining
+\begin{align}
+  t_{i+1/2} = \frac{t_{i} + t_{i+1}}{2} = t_{i} + h/2
+\end{align}
+
+
+
+
+
+
+
+
+\newpage
+ We first use Taylor expansion to approximate $f(t,y)$ around the midpoint of
+ the integration interval, this is at $t_{i}+ h/2$, where $h$ is the step-size.
+ Then we use the midpoint formula, we get
+ \begin{align*}
+   \int_{t_{i}}^{t_{i+1}} f(t,y) dt \approx h f(t_{i+1/2}, y_{i+1/2}) + O(h^{3})
+ \end{align*}
+ where we use subscript $y(t_{i}+h/2) = y_{i+1/2}$ and equivalent for time,
+ $t_{i} + h/2 = t_{i+1/2}$.
+
+ Substitution into (\ref{eq:rk4_yNext}) results in
+ \begin{align*}
+   y_{i+1} = y_{i} + h f(t_{i+1/2},y_{i+1/2}) + O(h^{3})
+ \end{align*}
+  We have to find the value of $y_{i+1/2}$ now. By employing Euler's method we
+  get the approximation
+  \begin{align*}
+	y_{i+1/2} \approx  y_{i} + \frac{h}{2}\dd{y}{t} = y(t_{i}) + \frac{h}{2} f(t_{i}, y_{i})
+  \end{align*}
+  We have now derived the second-order Runge-Kutta method. Coefficients are
+  given by
+  \begin{align*}
+	k_{1} &= h f(t_{i}, y_{i}) \\
+    k_{2} &= h f(t_{i+1/2}, y_{i+1/2})
+  \end{align*}
+  and the update function is
+  \begin{align*}
+	y_{i+1} \approx y_{i} + k_{2} + O(h^{3})
+  \end{align*}
+  For the fourth-order Runge-Kutta method, we simply use the same idea, but
+  instead of approximating the integral with midpoint rulel, we now employ the
+  Simpson's rule (KANSKJE EN REFERANSE TIL DETTE, finne i boka til Morten) and
+  get
+  \begin{align*}
+	\int_{t_{i}}^{t_{i+1}} f(t,y)dt  \approx  \frac{h}{6}\left[f(t_{i},y_{i}) +
+    4f(t_{i+1/2}, y_{i+1/2}) + f(t_{i+1}, y_{i+1})\right] + O(h^{5})
+  \end{align*}
+  Since we do not know the values of the midpoints evaluation, we simply split
+  it in two steps, so the update function becomes
+  \begin{align*}
+	y_{i+1} \approx y_{i} + \frac{h}{6}\left[f(t_{i},y_{i}) + 2f(t_{i+1/2},
+    y_{i+1/2}) + 2f(t_{i+1/2}, y_{i+1/2}) + f(t_{i+1},y_{i+1})\right]
+  \end{align*}
+  Summarizing the method:
+  \begin{enumerate}
+  \item Find the first coefficient
+    \begin{align*}
+      k_{1} = hf(t_{i},y_{i})
+    \end{align*}
+  \item Use Euler's method to find $y_{i+1/2}$, so the next coefficient is
+    \begin{align*}
+      k_{2} = hf(t_{i}+h/2, y_{i}+k_{1}/2)
+    \end{align*}
+  \item Improve the slope calculation by finding
+    \begin{align*}
+      k_{3} = hf(t_{i} + h/2, y_{i}+k_{2}/2)
+    \end{align*}
+  \item Last coefficient is computed as follows
+    \begin{align*}
+      k_{4} = hf(t_{i} + h, y_{i} + k_{3})
+    \end{align*}
+  \item Finally, the update function is given by
+    \begin{align*}
+      y_{i+1} = y_{i} + \frac{1}{6}\left(k_{1} + 2k_{2} + 2k_{3} + k_{4}\right)
+    \end{align*}
+  \end{enumerate}
+
+
+
+  \subsection{Monte Carlo simulation}
+  Core of Monte Carlo simulation lies in randomness. Transition between
+  groups/states is based on comparing a random number with a probability
+  of the given transition (in-deepth description of the method can be found in
+  section (REFERANSE til metode del)). However, in this section we wish only to
+  show how we derive these probabilities from differential equations in section
+  (\ref{sec:SIRS}).
+
+  \vspace{3mm}
+
+  It is explained and shown here (REFERANSE til oppgave teksten - eller skrive
+  det her) how to find probabilities for the first, closed model (look
+  (\ref{sec:SIRS1})). Results are following
+  \begin{align*}\label{eq:SIR_trans}
+	P(S \rightarrow I) = \frac{aSI}{N} \Delta t \\
+    P(I \rightarrow R) = bI \Delta t \\
+    P(R \rightarrow S) = cR \Delta t
+  \end{align*}
+  % SIRS1,2,3 og sånt dukker opp som seksjon 2.1, men når man trykker på den så
+  % går det til riktig paragraf, idk om vi burde beholde det eller ikke
+  Similarly we can find the transition probabilities for vital dynamics model
+  (\ref{sec:SIRS2}) and vaccination model (\ref{sec:SIRS4}). Since differential
+  equations differs with only some extra constants, probabilities shown in
+  (\ref{eq:SIR_trans}) holds for these models as well. Respectively we get
+  \begin{align*}
+	P(B \rightarrow S) &= eN \Delta t\\
+    P(S \rightarrow D) &= dS \Delta t\\
+    P(I \rightarrow D) &= (d + d_{I})I \Delta t\\
+    P(R \rightarrow D) &= dR \Delta t
+  \end{align*}
+  where $B$ indicates the birth group; we simply just add people to the
+  \textbf{S} group. $D$ is the death group; we simply substract people from a
+  given group.
+
+  For vaccination we get
+  \begin{align*}
+	P(S \rightarrow R) = f \Delta t
+  \end{align*}
+
+\section{Method}
+Her skal vi snakke om metode, selve implementasjon linked med teorien over.
+
+jeg foreslår at vi har en seksjon med koden/implementation og en seksjon med
+valg av parametere (og kanskje epsilon)
+\section{Results}
+Results are not important here. RK22 was used so everything is precise.
+\section{Discussion}
+Do not discuss with us coz we gon' fuck U up, bro.
+\section{Conclusion}
+We are the best, mUUUtherfuckers.
+\section{Further work}
+There is so much more we coudl do but we do not give fuck about that.
+
+\newpage
+%\bibliographystyle{apastyle}
+%\bibliography{project5}
+\end{document}

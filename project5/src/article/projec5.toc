@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {section}{\numberline {2}Theoretical Model}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}SIR-model}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}SIRS-model}{2}{subsection.2.2}
+\contentsline {paragraph}{Vital dynamics (open system).}{3}{section*.2}
+\contentsline {paragraph}{Seasonal variation.}{4}{section*.3}
+\contentsline {paragraph}{Vaccination.}{4}{section*.4}
+\contentsline {subsection}{\numberline {2.3}Runge-Kutta 4}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Monte Carlo simulation}{6}{subsection.2.4}
+\contentsline {section}{\numberline {3}Method}{6}{section.3}
+\contentsline {section}{\numberline {4}Results}{6}{section.4}
+\contentsline {section}{\numberline {5}Discussion}{6}{section.5}
+\contentsline {section}{\numberline {6}Conclusion}{6}{section.6}
+\contentsline {section}{\numberline {7}Further work}{6}{section.7}
