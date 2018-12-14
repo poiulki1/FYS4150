@@ -6,8 +6,12 @@ INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib
 SOURCES += \
         main.cpp \
-        solver.cpp
+        solver.cpp \
+    savetofile.cpp \
+    read_parameters.cpp
         LIBS += -larmadillo -llapack -lblas
 
 HEADERS += \
-    solver.h
+    solver.h \
+    savetofile.h \
+    read_parameters.h

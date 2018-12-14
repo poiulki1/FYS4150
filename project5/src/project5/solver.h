@@ -3,13 +3,14 @@
 
 #include <functional>
 #include <random>
+#include <math.h>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <armadillo>
+#include "savetofile.h"
 using namespace std;
 using namespace arma;
-
 
 class solver
 {
@@ -31,7 +32,7 @@ private:
     }
 
     inline double dt5(double dI_value, double d_value, double N){
-        return 1.0/(dI_value+d_value)*N;
+        return 1.0/((dI_value)*N);
     }
 
     inline double dt6(double d_value, double N){
@@ -43,26 +44,25 @@ private:
     }
 
 
-    inline int idx(int dim, int i){
-        return dim*MCcycles +  i;
-
-    }
-
-    inline int idx2(int dim, int i){
-        return 2*dim + i;
-    }
-
-
     int ss, ii, rr, dd, dss, diii, drrr, bss;
 
-    double S_to_I, I_to_R, R_to_S, S_to_D, I_to_D, R_to_D, B_to_S;
+    double S_to_I, I_to_R, R_to_S, S_to_D, I_to_Di,I_to_D, R_to_D, B_to_S, S_to_R;
     double S, I , R;
     double init_S, init_I, init_R;
+    double susceptible, infected, recovered, born, death_sus, death_rec, death_infected;
+
+    void update_a(double time);
+    double a0, f0;
+    void reset_matrix(mat &A, rowvec &B);
+    void set_initial(bool Mc_arg, mat &M);
+    void update_f(double time);
+    void calculate_variance_and_sigma(int b, rowvec &time, mat &sampled_SIR, mat &unsampled_SIR,
+                                      int nsamples, savetofile &save_obj);
 public:
 
 
-    solver(int Mc, double initial_S, double initial_I,double initial_R, double a, double b, double c,
-           double d, double d_i, double e, double f, int N_population, double final_time, double start_time);
+    solver(int Mc, double initial_S, double initial_I,double initial_R,
+           int N_population, double final_time, double start_time);
     ~solver();
 
     int MCcycles, N;
@@ -83,12 +83,8 @@ public:
 
 
 
-    void MonteCarlo(int index, double dt, int N, int nsamples);
-    void execute_solve(bool Mc_arg, double B);
-
-    //void derivatives(double t, double s, double i , double r);
-    //void rk4_step(double h, double time,int dim, int index);
-
+    void MonteCarlo(double dt);
+    void execute_solve(string arg, bool Mc_arg, double B, int nsamples, savetofile &save_obj);
 
     void change_b(double value);
 
@@ -97,8 +93,14 @@ public:
 
     double dt(double N);
 
+    double limit;
+    double omega;
+
 
     void Npopulation(double S_, double I_, double R_);
+
+
+    void initialize_parameters(double a, double b, double c, double d, double d_i, double e, double f, double deviation, double w);
 };
 
 #endif // SOLVER_H

@@ -2,36 +2,28 @@
 #include "solver.h"
 #include <vector>
 #include <armadillo>
+#include "read_parameters.h"
 using namespace std;
 using namespace arma;
 
-int main()
-{   int MC = 5000;
-    int initial_S = 300;
-    int initial_I = 100;
-    int initial_R = 0;
-    double a = 4;
-    double b = 1;
-    double c = 0.5;
-    double d = 0.1;
-    double d_i = 0.1;
-    double e = 0.2;
-    double f = 0;
+int main(int argc, char* argv[])
+{
+
+    read_parameters::parameters("../parameter/parameter.txt");
 
 
-    double final_time = 15;
-    double start_time = 0;
-    int N_population = 400;
+    solver run_solver(read_parameters::MC_cycles,read_parameters::init_S,read_parameters::init_I,
+                      read_parameters::init_R, read_parameters::Npopulation,
+                      read_parameters::final_time, read_parameters::start_time);
 
+    savetofile save_obj("run", "4_0.5_0_0_0_0");
 
-    //cout << "Hello World!, this is an apocalypse" << endl;
-    solver methods(MC,initial_S,initial_I,initial_R, a, b, c, d,d_i,e,f,N_population, final_time, start_time);
+    run_solver.initialize_parameters(read_parameters::a, read_parameters::b, read_parameters::c, read_parameters::d,
+                                     read_parameters::d_i,read_parameters::e,read_parameters::f,
+                                     read_parameters::max_diviation, read_parameters::omega);
 
-    methods.execute_solve(true, 5);
-
-    //cout << "initial state " << " " << methods.S[0] << " end state " << " " << methods.S[MC] << endl;
-    //cout << "initial state " << " " << methods.I[0] << " end state " << " " << methods.I[MC] << endl;
-    //cout << "initial state " << " " << methods.R[0] << " end state " << " " << methods.R[MC] << endl;
+    run_solver.execute_solve("mc",true , 5,read_parameters::Nsamples ,save_obj);
+    run_solver.execute_solve("rk4",false , 5,read_parameters::Nsamples ,save_obj);
 
     return 0;
 }
