@@ -25,6 +25,7 @@
 \usepackage{changepage}
 
 
+\newcommand*{\fullref}[1]{\hyperref[{#1}]{\autoref*{#1} \nameref*{#1}}}
 \renewcommand{\topfraction}{.85}
 \renewcommand{\bottomfraction}{.7}
 \renewcommand{\textfraction}{.15}
@@ -65,42 +66,60 @@ ABSTRAKTEN HER
 \tableofcontents
 \newpage
 \section{Introduction}
-SIR (\textbf{S}usceptible, \textbf{I}nfected, \textbf{R}ecovered) model and its
-variations (SIRS, MSIR, SEIR, etc.)\footnote{$https://en.wikipedia.org/wiki/Compartmental\_models\_in\_epidemiology$}
-is very common method in epidemiology investigations. However this model is not only
-limited to this field of studies (see e.g (REFERANSE til paperen)). The main
+Having the knowledge how deadly infectious spreads among a closed or open group,
+can be crucial in order to stop a deadly disease before its to late. In order to have
+this knowledge we must simply build a mathematical model which can describe this notion.
+In early seventeenth hundred such models were derived and used to predict of how disease behaved
+when introducing a vaccine. This field have expanded into mathematical epidemiology.
+\vspace{3mm}
+\\
+The most famous and
+commonly used is the SIR (\textbf{S}usceptible, \textbf{I}nfected, \textbf{R}ecovered) model.
+The philosophy behind this model is to introduce three different compartment groups into a system,
+where one of the group carries a infectious disease. Assuming that each individual from each group has the possibility
+to interact with each other. This will lead to people become ill from the disease, but also recover from the disease
+depending how infectious and deadly the disease is. In order to describe this notion, we must develop
+a set of coupled differential equations, which explains this type of behaviour in a closed or open system.
+From this we can develop a understanding
+how fast a disease can spread, but also how fast people heal and recover from a infectious disease.
+\vspace{3mm}
+\\
+Many models in mathematical epidemiology are derived from this basic idea used in SIR model. Models such as SIRS, MSIR, SEIR, and more.
+However this model is not only
+limited to this field of studies. The SIR model can also be expanded and be used in the study of
+traffic congestion( see e.g (REFERANSE til paperen)). The main
 idea is to have three different groups, where objects are moved around between
 groups based on system's conditions.
 % https://www.worldscientific.com/doi/abs/10.1142/S0217984904008031
-Some of the diseases are ``one-time'' diseases, i.e. one can get infected only
-once. However in this project, we will allow the circular transition, it means,
-when one recover, he/she can get infected again, this model is simply called
-SIRS.\@
-
-We will be using two different aproaches to study the spreadning
-of a disease in the small population over time. The first approach is to
-nummerically solve the coupled differential equations which are describing the
-system's states and its transitions. We employ very accurate method; Runge-Kutta
-of fourth order.
-The second approach is the Markov Chain
-Monte Carlo method, where the transition from one state/group to another is
-be based on probability and random numbers.
-
-We wish to study different variations of the model. First we look at short time
-period where the population is fixed (no birth or death). We add vital dynamics
-in the next variant. It means that now we allow births and deaths in the system
-so the population varies. This means that the simulation needs to be run for a
-longer time. We will study how some seasonal diseases impact the model by
-introducing a new osciallating transmission rate. Last thing we wish to
-investigate is to see how the vaccination among the population will change the
-spread of the disease.
+\vspace{3mm}
+\\
+In this numerical study we will be studying the model SIRS which is explained in depth in the next section.
+We wish wish to study different events created by this model.
+\begin{itemize}
+  \item We will first introduce a
+  non deadly infectious disease, and simply assume no one dies from it. We will also
+  assume that no one from each compartment groups dies of natural cause and gives birth.
+  Thus simulating a closed system where the total population number is fixed.
+  \item We will then continue our studies to a open system, where we allow people
+  to die from natural cause and the disease itself, but also introduce a birth rate.
+  \item We will also study how some seasonal diseases impact the model by
+  introducing a new time depdendent osciallating transmission rate. For diseases
+  such as influenza, the rate of transmission depends largely on the time of year we are in.
+  \item We also introduce a vaccine for an arbitray disease.
+\end{itemize}
+In order to solve these coupled time dependent system we have chosen two types of approach.
+First we will  directly solve the coupled differential equation by using fourth order
+Runge-Kutta method. We will then compared it with Markov Chain
+Monte Carlo method, where the transition from one state/group to another state/group
+be based on probability and random numbers. Keep in mind we will also compare
+the method against each other.
 
 \section{Theory}
 In this section we will present the theoretical framework and different types of model used in this
-numerical study. Keep in mind that the algorithm Runge-Kutta is also derived in this section.
+numerical study. Keep in mind that the algorithm Runge-Kutta of fourth and probability transition in Monte Carlo
+is also derived in this section. For implementation of Monte Carlo and Runge kutta please see (ref her)
 
-\subsection{SIR-model\label{sec:SIR}} In disease modeling the SIR model is one of the simplest
-compartment models. Many complicated models are derived from this simple idea.
+\subsection{SIR-model}\label{SIR model}
 Consider a group of "susceptible" with population $S$, which has the possibility to be infected by a deadly or non-deadly
 disease by someone which carries this infection. The person who carries this infection is in the "infected" group with population $I$.
 We will now assume that there is some possibility (depends on the disease) that one or more from group $I$
@@ -111,7 +130,7 @@ compartment are constant. Thus the total population in this system follows
 \begin{align}
   N(t) = S(t) + I(t) + R(t)
 \end{align}
-\subsection{SIRS-model}\label{sec:SIRS}
+\subsection{SIRS-model}\label{SIRS model}
 We will now consider a bit more general model compared with previous one presented in \eqref{sec:SIR} called SIRS.
 Assuming no babies born into these three group and the possibility of dying being zero.
 We will now consider a group of recovered people from a disease $\mathcal{D}$. We will now assume that these
@@ -147,7 +166,7 @@ Where $a$ describes the transmission rate of the disease, $b$ describes the rate
 describes the loss of immunity. The change described by these equations will always keep the
 total population $N(t)$ constant. This can be easily seen when adding $S'$, $I'$ and $R'$ together.
 
-\paragraph{Vital dynamics (open system).}\label{sec:SIRS2} We will now consider a open system. Meaning
+\paragraph{Vital dynamics (open system)}\label{vital dynamics} We will now consider a open system. Meaning
 we will have a even more realistic scenario compared with two previous models. We will now introduce
 a death rate which can occour in group $S$, $I$ and $R$. The cause of death is not by the disease itself, but describing
 other reasons such as natural cause of death such as heart attack. We will define this parameter rate as
@@ -174,29 +193,39 @@ Considering the other case, simulating an apocalypse with deadly disease/infecti
 \begin{align}
   eN << dR + (d_{i} + d)I
 \end{align}
-\paragraph{Seasonal variation.}\label{sec:SIRS3} In this variant we wish to study how the
-population is affected by oscillating diseases (e.g influenza). We will
+Thus $dR + (d_{i} + d)I$ must dominate in order to bring the population down.
+\paragraph{Seasonal variation}\label{seasonal variation} As introduced in the introdcution, we
+also wish to study how the
+population is affected by oscillating diseases such as influenza. We will
 slightly change the transmition rate $a$ to be time dependend
-\begin{align*}
+\begin{align}
   a(t) = A\cos{(\omega t)} + a_{0}
-\end{align*}
+\end{align}
 where $a_{0}$ is the average transmission rate, $A$ is the maximum deviation
 from the average and $\omega$ is frequency of oscillation.
 
-\paragraph{Vaccination.}\label{sec:SIRS4}  Here we introduce new constant, $f$,
-which will break our circular model, and allow transition from \textbf{S} to
-\textbf{R} directly. We want to model this constant such that this is time
-depended, indicating the improvment of vaccination so more people will get
-vaccinated with time.
+\paragraph{Vaccination}\label{vaccination}  Here we introduce a new constant, $f$,
+which will break our circular model, and allow transition directly from \textbf{S} to
+\textbf{R}. The set of differential equation will then look like
 \begin{align*}
   \frac{dS}{dt} &= cR - \frac{aSI}{N} - f\\
   \frac{dI}{dt} &= \frac{aSI}{N} - bI \\
   \frac{dR}{dt} &= bI - cR + f
 \end{align*}
-In section (REFERANSE til en forklaring av funksjonen til f(t)) we discuss the
-choice of the function.
+Keep in mind we have removed the parameter explaining the death and the birth rate the system.
+Meaning we wish to investigate the maximum potential of a vaccine.
+In this numerical study we wish to implement a time dependent vaccination rate $f(t)$,
+to simulate the improvement of the vaccination as more people get vaccinated as the time goes.
+The function which satisfies this is
+\begin{align}
+  f(t) = \frac{f_{0}}{1 + e^{-t}}
+\end{align}
+Where $f_{0}$ is the initial rate of how many people gets treated with this type of vaccine.
 
-\subsection{Runge-Kutta 4}
+\subsection{Numerical algorithm}
+\subsection{Runge-kutta 2}
+
+\subsubsection{Runge-Kutta 4}
 Runge-Kutta of fourth order is widely used numerical algorithm for solving ordinary differential equations
 ,due to its precision which makes it a superior and relatively fast method. As other numerical ODE algorithms it is also based on Taylor expansion theorem.
 The idea behind this method is that it provides intermediate steps to calculate
@@ -242,7 +271,7 @@ We now wish to taylor expand our integration interval around a midpoint, thus de
  where we use subscript $y(t_{i}+h/2) = y_{i+1/2}$ and equivalent for time,
  $t_{i} + h/2 = t_{i+1/2}$.
 
- Substitution into (\ref{eq:rk4_yNext}) results in
+Substitution into (\ref{eq:rk4_yNext}) results in
  \begin{align*}
    y_{i+1} = y_{i} + h f(t_{i+1/2},y_{i+1/2}) + O(h^{3})
  \end{align*}
@@ -302,57 +331,292 @@ We now wish to taylor expand our integration interval around a midpoint, thus de
 
 
   \subsection{Monte Carlo simulation}
-  Core of Monte Carlo simulation lies in randomness. Transition between
-  groups/states is based on comparing a random number with a probability
-  of the given transition (in-deepth description of the method can be found in
-  section (REFERANSE til metode del)). However, in this section we wish only to
-  show how we derive these probabilities from differential equations in section
-  (\ref{sec:SIRS}).
-
-  \vspace{3mm}
-
-  It is explained and shown here (REFERANSE til oppgave teksten - eller skrive
-  det her) how to find probabilities for the first, closed model (look
-  (\ref{sec:SIRS1})). Results are following
-  \begin{align*}\label{eq:SIR_trans}
-	P(S \rightarrow I) = \frac{aSI}{N} \Delta t \\
-    P(I \rightarrow R) = bI \Delta t \\
-    P(R \rightarrow S) = cR \Delta t
-  \end{align*}
-  % SIRS1,2,3 og sånt dukker opp som seksjon 2.1, men når man trykker på den så
-  % går det til riktig paragraf, idk om vi burde beholde det eller ikke
-  Similarly we can find the transition probabilities for vital dynamics model
-  (\ref{sec:SIRS2}) and vaccination model (\ref{sec:SIRS4}). Since differential
-  equations differs with only some extra constants, probabilities shown in
-  (\ref{eq:SIR_trans}) holds for these models as well. Respectively we get
-  \begin{align*}
-	P(B \rightarrow S) &= eN \Delta t\\
-    P(S \rightarrow D) &= dS \Delta t\\
-    P(I \rightarrow D) &= (d + d_{I})I \Delta t\\
-    P(R \rightarrow D) &= dR \Delta t
-  \end{align*}
-  where $B$ indicates the birth group; we simply just add people to the
-  \textbf{S} group. $D$ is the death group; we simply substract people from a
-  given group.
-
-  For vaccination we get
-  \begin{align*}
-	P(S \rightarrow R) = f \Delta t
-  \end{align*}
-
+  The philosophy behind Monte Carlo simulation is to draw a number from a probabilty transition
+  or density, and compared it with random uniformed number in the interval $[0,1]$. In our case
+  we assume that $S$, $I$ and $R$ are continous, but in reality $S$, $I$ and $R$ are discrete. Using the idea of
+  randomness, we can use the philosophy behind Monte Carlo simulation to construct this discrete movement between groups.
+  In order to do this we must a have set of probability transitions explaining the move
+  from $S \to I$, $I\to R$ and $R \to S$. The beauty of this is that it is easily expanded, and
+  probability transition explaining other moves can easily be implemented. The implementation of this
+  is explained in (fullref her) (ref her med tall).
+ In order to make a move from a general group $j \to q$, the
+  probabilty is then, a small timestep $\Delta t$ multiplied with the number of people moving from $j \to q$.
+  Recalling the factors used in the differential in \fullref{SIRS model},
+  \fullref{vital dynamics} and \fullref{vaccination},
+   we can define probability transition to a another compartment group as following:
+   \begin{itemize}
+     \item Lets assume that a susceptible person from group $S$
+     interacts with a infected person from group $I$. Depending how large the transmission
+     rate parameter $a$ of some disease $\mathcal{D}$ is. The number of people
+     moving from $S$ to $I$ at small time step $\Delta t$ is
+     \begin{align}
+       S\to I = \frac{aSI}{N}
+     \end{align}
+      The probabilty transition is then
+     is defined as
+     \begin{align}
+       P(S \rightarrow I) = \frac{aSI}{N} \Delta t
+     \end{align}
+     Using the same philosophy we can define other probabilty transition as following:
+     \item The probabilty transition of making a move from $I \to R$ is
+     \begin{align}
+         P(I \rightarrow R) = bI \Delta t
+     \end{align}
+      \item The probabilty transition of making a move from $R \to S$ is
+      \begin{align}
+        P(R \rightarrow S) = cR \Delta t
+      \end{align}
+   \end{itemize}
+As explained earlier, the SIRS model can be easily expanded. Thus we can find the transition probabilities for
+\fullref{vital dynamics} and \fullref{vaccination} by using the same philosophy. The probabilty transition are
+defined as
+\begin{align}
+P(B \rightarrow S) &= eN \Delta t\\
+  P(S \rightarrow D) &= dS \Delta t\\
+  P(I \rightarrow D) &= (d + d_{I})I \Delta t\\
+  P(R \rightarrow D) &= dR \Delta t
+\end{align}
+Here we have defined two new subgroups $B$ and $D$.
+Where $B$ is a group of babies comming into to system $S$, and $D$ is the group dead people when dying
+from the disease itself or a some other natural cause. For the case with vaccination we have
+\begin{align}
+  	P(S \rightarrow R) = f \Delta t
+\end{align}
+How we update the number of people in each compartment group is explained in section (fullref til sec) og (ref tall her).
 \section{Method}
-Her skal vi snakke om metode, selve implementasjon linked med teorien over.
+In this section we will expalin how the different type method are implement
+into our code. Keep in mind that the code is writeen in C++.
+\subsection{Structure of the code}
+The complete code consist four classes and object oriented in a more pythonic way compared
+with the traditional C++ object orienting. The main.cpp reads and calls different class instances.
+\begin{itemize}
+  \item solver.cpp : This class contains different method which has different task to solve the problem introduced.
+  This class has to solver methods implemented. Runge Kutta method of fourth order and a Monte Carlo function.
+  If one desires to use another solver, it can be easily implemented since most of the functions are independent of each other.
+  Keep in mind to call the new solver in execute\_solver method. This class also calculates the
+  standard deviation and the variance.
+  \item read\_parameter.cpp : This class reads parameters from parameters.txt
+  \item savetofile.cpp : This class saves result into a .txt file.
+\end{itemize}
+\subsection{Runge-Kutta} For the sake of accuracy we have chosen to implement Runge-Kutta
+of fourth order to achieve best possible results. Keep in mind, as explained in the previous section
+the code is fully object oriented and vectorized. Meaning additional numerical methods
+for solving the ODE is easily implemented.
+\subsection{Sampling of Monte Carlo runs} When using Monte Carlo we must expect that
+for each run, the result will deviate by some decimals from the expected numerical result
+In order to minimize this deviation,
+we can sample the same simulation $N_{sample}$ times over $M$ Monte Carlo cycles.
+The idea is to look at the average of the result when sampling
+$N_{sample}$ times. This is simply done by adding the point $N_{samples}$ times for each
+$M_{mc}$ iteration and then divide by $N_{samples}$. From this we will get the average of the result which is
+signifcantly more smoother and nicer to analyze.
+From this we can also calculate the variance for each time point, and use this
+to calculate the standard deviation.  The sampling method is implemented in the following way
+\begin{lstlisting}
+  for(int n = 0; n < nsamples; n++){
+    for(int mc_step = 0; mc_step < MCcycles; mc_step++){
+      SIR(mc_step,0) += S/double(nsamples);
+      SIR(mc_step,1) += I/double(nsamples);
+      SIR(mc_step,2) += R/double(nsamples);
+    }
+  }
+\end{lstlisting}
+\subsection{Variance \label{var}} As explained previously we are interested in the average of the result computed,
+this means that we can compute the variance. The variance is simply defined as squared of the deviation from the mean value,
+mathematically
+\begin{align}
+  Var(X) = (X-\mu)^{2}
+\end{align}
+Where $X$ is our random result from each Monte Carlo cycles and $\mu$ is the computed
+average of $X$. In our case we want to look at the average variance from each $N_{samples}$.
+This is simply
+\begin{align}
+  Var(X) = \frac{(X-\mu)^{2}}{N_{samples}}
+\end{align}
+Notice that $X$ and $\mu$ are matrices containing information about the deviation in $S$
+$I$ and $R$ data with number of Monte Carlo cycles as length in each dimension. This method is implemented in the following way
+\begin{lstlisting}
+for(int n = 0; n < nsamples; n++){
+  for(int j = 0; j < MCcycles; j++){
+      varS(j) += (avgS(j)-S(j))*(avgS(j)-S(j))/(nsamples-1);
+      varI(j) += (avgI(j)-I(j))*(avgI(j)-I(j))/(nsamples-1);
+      varR(j) += (avgR(j)-R(j))*(avgR(j)-R(j))/(nsamples-1);
+    }
+  }
+\end{lstlisting}
+The goal of this is to have the variance such that we can calculate the standard deviation $\sigma = \{\sigma_{S},\sigma_{I},\sigma_{R}\}$ for each
+compartment group. This number simply tells us where the expected data should lie.
+\subsection{Standard deviation} As explained previously section \eqref{var} we want to estimate the standard deviation
+in order to have a idea of where the result should lie. The standard deviation is defined as
+\begin{align}
+  \sigma = \sqrt{\frac{\sum_{i}Var(X_{i})}{N}}
+\end{align}
+This method is implemented in the following way
+\begin{lstlisting}
+for(int n = 0; n < nsamples; n++){
+  for(int j = 0; j < MCcycles; j++){
+    sigmaS += sqrt(varS(j)/(nsamples*MCcycles));
+    sigmaI += sqrt(varI(j)/(nsamples*MCcycles));
+    sigmaR += sqrt(varR(j)/(nsamples*MCcycles));
+  }
+}
+\end{lstlisting}
+\subsection{Monte Carlo simulation} In the section of theory we explained and derived
+the probability transitions from one compartment group to another. Using these probability transitions we can simply draw a
+random uniformed number $r$ in the inverval $[0,1]$ to check if $r \le P_{i\to j}$. If the condition is fullfilled
+we then move a human from one compartment group $i$ to $j$. This is done by subtract and adding $1$ to temporary
+variables. The reason why use a temporary variables is that have several probability transitions conditions, and
+every event can happen at once. Thus we must draw a new number each time we check these transitions. When have checked all the conditions,
+we will then add the corresponding temporary variable to its compartment group. In the code, we have defined
+three variables as "susceptible", "infected" and recovered in the end are these added to $S$, $I$ and $R$.
+A small part of the Monte Carlo method is presented down below
+\begin{lstlisting}
+random_device rd;
+mt19937_64 gen(rd());
+uniform_real_distribution<double> RandomNumberGenerator(0.0,1.0);
 
-jeg foreslår at vi har en seksjon med koden/implementation og en seksjon med
-valg av parametere (og kanskje epsilon)
+ //probabilty transitions of moving from S to I to R
+ S_to_I = (parameter[0]*S*I/N)*dt;
+ I_to_R = parameter[1]*I*dt;
+ R_to_S = parameter[2]*R*dt;
+
+ susceptible = infected = recovered = 0;
+
+ if(RandomNumberGenerator(gen) < S_to_I){
+     susceptible -= 1;
+     infected += 1;
+ }
+
+ if(RandomNumberGenerator(gen) < I_to_R){
+     infected -= 1;
+     recovered += 1;
+ }
+
+ if(RandomNumberGenerator(gen) < R_to_S){
+     recovered -= 1;
+     susceptible += 1;
+
+ }
+ S += susceptible;
+ I += infected;
+ R += recovered;
+\end{lstlisting}
+
 \section{Results}
-Results are not important here. RK22 was used so everything is precise.
+In this section we will present the different result from the different type of SIRS
+model. Keep in mind that we have used $N_{mc} = 10000$ Monte Carlo cycles with $N_{samples} = 100$ sampling runs.
+In the simulation where RK4 where used, we used $N = 100000$ iterations with a $h = 1/N$. Important infomartion suc as parameter
+used are given in the title of the result.
+\subsection{SIRS model for closed system} In this section we will present the result when using
+different values of the recovery rate $b$. We used $b = \{1,2,3,4\}$
+\subsubsection{b = 1}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0_0_0_0}.pdf}
+  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
+  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
+  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
+  plotted with respect to time $t$. }
+  \label{closed b = 1}
+\end{figure}
+
+\subsubsection{b = 2}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_2_abcddief_4_0.5_0_0_0_0}.pdf}
+  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
+  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
+  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
+  plotted with respect to time $t$.}
+  \label{closed b = 2}
+\end{figure}
+
+\subsubsection{b = 3}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_3_abcddief_4_0.5_0_0_0_0}.pdf}
+  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
+  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
+  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
+  plotted with respect to time $t$.}
+  \label{closed b = 3}
+\end{figure}
+
+\subsubsection{b = 4}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_4_abcddief_4_0.5_0_0_0_0}.pdf}
+  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
+  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
+  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
+  plotted with respect to time $t$.}
+  \label{closed b = 4}
+\end{figure}
+
+\subsection{SIRS model with vital dynamics:}
+Using the set of rate of recovery $b = \{1,2,3,4\}$ as before
+\subsection{b = 1}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
+  \caption{}
+  \label{open b = 1}
+\end{figure}
+\subsection{b = 2}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_2_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
+  \caption{}
+  \label{open b = 2}
+\end{figure}
+\subsection{b = 3}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_3_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
+  \caption{}
+  \label{open b = 3}
+\end{figure}
+\subsection{b = 4}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_4_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
+  \caption{}
+  \label{open b = 4}
+\end{figure}
+\subsection{Seasonal variation, no death and birth rate}
+\subssubection{$a = a(t)$, $b = 1$, $c = 0.5$, $d_{i} = d = e = f = 0$}
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_a(t)_0.5_0_0_0_0}.pdf}
+  \caption{}
+  \label{seasonal variation}
+\end{figure}
+
+\subsection{Vaccination, no death and birth rate}
+\subssubection{$a = 4 $, $b = 1$, $c = 0.5$, $d_{i} = d = e = f = 0$}
+FIX THIS!
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0_0_0_0}.pdf}
+  \caption{}
+  \label{vaccination}
+\end{figure}
+
 \section{Discussion}
-Do not discuss with us coz we gon' fuck U up, bro.
+\subsection{SIRS closed system}
+In previous sections we did RK4 and Monte Carlo simulation for a scenario with no birth
+and death rate. As we analyze the graphs we notice minimal differences for $b = 1$ and $b = 2$.
+
+\subsection{SIRS with vital dynamics}
+
 \section{Conclusion}
 We are the best, mUUUtherfuckers.
-\section{Further work}
-There is so much more we coudl do but we do not give fuck about that.
+\section{Future work}
+Theres seems to be a small bug in the C++ code. When analyzing the graphs produced
+by Monte Carlo and RK4 method, for some parameters there is a signifcantly large difference.
+This is clearly seen when looking at the y-axis. For future work we want to look deeper into this
+in order to find the bug, or to get a better understanding of why this difference between these two methods appears.
+
 
 \newpage
 %\bibliographystyle{apastyle}

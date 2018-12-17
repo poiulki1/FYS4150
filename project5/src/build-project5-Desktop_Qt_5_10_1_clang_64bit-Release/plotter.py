@@ -15,8 +15,8 @@ if argument == "yes":
     something2 = []
 
     for i in range(1,5):
-        something1.append(np.genfromtxt("run_mc_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
-        something2.append(np.genfromtxt("run_rk4_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
+        something1.append(np.genfromtxt("../result/run_mc_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
+        something2.append(np.genfromtxt("../result/run_rk4_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
 
     for i in range(1,5):
         plt.clf()
@@ -24,7 +24,7 @@ if argument == "yes":
         plt.plot(something1[i-1][:,0], something1[i-1][:,1])
         plt.plot(something1[i-1][:,0], something1[i-1][:,2])
         plt.plot(something1[i-1][:,0], something1[i-1][:,3])
-        plt.legend(['Susceptible', 'infected', 'recovered'], loc = 'best')
+        plt.legend(['Susceptible', 'infected', 'recovered'], loc = 'upper right')
 
         plt.title("Monte carlo: $a =$ " + str(number_arg1[0]) + " ,$b =$ " + str(i)
          + ",$ c =$ " + str(number_arg1[1])+  " , $d =$ " + str(number_arg1[2]) + " ,$d_{i} = $" + str(number_arg1[3]) +
@@ -40,16 +40,17 @@ if argument == "yes":
         plt.plot(something2[i-1][:,0], something2[i-1][:,1])
         plt.plot(something2[i-1][:,0], something2[i-1][:,2])
         plt.plot(something2[i-1][:,0], something2[i-1][:,3])
-        plt.legend(['Susceptible', 'infected', 'recovered'], loc = 'best')
+        plt.legend(['Susceptible', 'infected', 'recovered'], loc = 'upper right')
 
         plt.title("Runge kutta 4: $a =$ " + str(number_arg1[0]) + " ,$b =$ " + str(i)
          + ",$ c =$ " +  str(number_arg1[1]) + " , $d =$ " + str(number_arg1[2]) + "$, d_{i} = $" + str(number_arg1[3]) +
         ", $e = $" +  str(number_arg1[4]) + " ,$f = $" + str(number_arg1[5]))
-        plt.tight_layout()
         plt.grid('on')
         plt.xlabel("time")
         plt.ylabel("Number of people")
-        plt.savefig("../figures/run_b_" + str(i) + "_abcddief_"+ number_arg + ".pdf")
+        plt.tight_layout()
+        plt.savefig("../figures/run_b_" + str(i) + "_abcddief_"+ number_arg + ".pdf", bbox_inches = "tight")
+        plt.show()
 
 elif argument == "no":
     number_arg1 = str(input("What is the value used for a,b,c,d,di,e,f ? "))
@@ -57,8 +58,8 @@ elif argument == "no":
     something2 = []
 
     for i in range(1,5):
-        something1.append(np.genfromtxt("variance_b" + str(i) + "_acddief_"+ number_arg1 +  ".txt"))
-        something2.append(np.genfromtxt("run_mc_b_" + str(i) + "_acddief_"+ number_arg1 +  ".txt"))
+        something1.append(np.genfromtxt("../result/variance_b" + str(i) + "_acddief_"+ number_arg1 +  ".txt"))
+        something2.append(np.genfromtxt("../result/run_mc_b_" + str(i) + "_acddief_"+ number_arg1 +  ".txt"))
 
     for i in range(1,5):
         plt.clf()
@@ -72,4 +73,4 @@ elif argument == "no":
         ", $e = $" +  str(number_arg1[4]) + " ,$f = $" + str(number_arg1[5]))
         plt.legend(['Susceptible', 'infected', 'recovered'], loc = 'best')
         #plt.show()
-        plt.savefig("../figures/variance_b_" + str(i) + "_abcddief_"+ number_arg1 + ".pdf")
+        plt.savefig("../figures/variance_b_" + str(i) + "_abcddief_"+ number_arg1 + ".pdf", bbox_inches = "tight")

@@ -15,11 +15,11 @@ void savetofile::save(string arg, int b, mat &M, rowvec &y, int run_length){
         file.open("../result/" + filename + "_mc_b_" + to_string(b) +"_acddief_"+ number_arg+ ".txt");
     }
     else if(arg == "rk4"){
-        file.open("../result/" +filename + "_rk4_b_" + to_string(b) + "_acddief_" + number_arg + ".txt");
+        file.open("../result/" + filename + "_rk4_b_" + to_string(b) + "_acddief_" + number_arg + ".txt");
     }
-    else{
-        file.open("../result/" + "variance_b" + to_string(b) + "_acddief_" + number_arg + ".txt");
-    }
+    //else{
+    //    file.open("../result/" + "variance_b" + to_string(b) + "_acddief_" + number_arg + ".txt");
+    //}
 
 
     for(int i = 0; i < run_length; i++){
@@ -38,10 +38,7 @@ void savetofile::save(string arg, int b, mat &M, rowvec &y, int run_length){
         cout << filename + "_rk4_b_" + to_string(b) + "_acddief_" + number_arg + ".txt is written" << endl;
         cout << "----------------------------------------------------------------- "<< endl;
     }
-    else{
-        cout << "variance_b" + to_string(b) + "_acddief_" + number_arg + ".txt is written"<<endl;
-        cout << "-----------------------------------------------------------------" << endl;
-    }
+
     file.close();
 
 

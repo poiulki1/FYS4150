@@ -49,7 +49,7 @@ void solver::MonteCarlo(double dt){
     S_to_I = (parameter[0]*S*I/N)*dt;
     I_to_R = parameter[1]*I*dt;
     R_to_S = parameter[2]*R*dt;
-    S_to_R = parameter[6]; //vaccanation
+    S_to_R = parameter[6]; //vaccination
 
     //death which occours in group S,I,R
 
@@ -237,20 +237,22 @@ void solver::calculate_variance_and_sigma(int b, rowvec &time, mat &sampled_SIR,
 }
 
 void solver::execute_solve(string arg, bool Mc_arg, double B, int nsamples, savetofile &save_obj){
+    double h;
     if(Mc_arg == true){
         MCcycles = MCcycles;
+        h = double(ft-ts)/MCcycles;
     }
     else{
         MCcycles = MCcycles*10;
+        h = double(ft-ts)/MCcycles;
     }
 
     rowvec time = zeros<rowvec>(MCcycles+1);
     mat SIR = zeros<mat>(MCcycles+1, number_of_functions);
     mat raw_SIR = zeros<mat>(MCcycles+1, number_of_functions);
-    double h = double(ft-ts)/MCcycles;
+
 
     for(int b = 1; b < B; b++){
-
         reset_matrix(SIR, time);
         if(Mc_arg == true){
             for(int n = 0; n < nsamples; n++){
@@ -259,8 +261,8 @@ void solver::execute_solve(string arg, bool Mc_arg, double B, int nsamples, save
                 Npopulation(S,I,R);
                 change_b(b);
                 for(int mc_step = 0; mc_step < MCcycles; mc_step++){
-                    //update_a(time(mc_step));
-                      update_f(time(mc_step));
+                    update_a(time(mc_step));
+                      //update_f(time(mc_step));
 
                     SIR(mc_step,0) += S/double(nsamples);
                     SIR(mc_step,1) += I/double(nsamples);

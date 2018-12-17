@@ -10,7 +10,7 @@ loss_of_immunity 0.5
 death_rate 0
 death_rate_infected 0
 birth_rate 0
-vaccine 0
+vaccine 0.7
 max_diviation 0
 omega 0
 final_time 15
