@@ -49,7 +49,7 @@ void solver::MonteCarlo(double dt){
     S_to_I = (parameter[0]*S*I/N)*dt;
     I_to_R = parameter[1]*I*dt;
     R_to_S = parameter[2]*R*dt;
-    S_to_R = parameter[6]; //vaccination
+    S_to_R = parameter[6]*dt; //vaccination
 
     //death which occours in group S,I,R
 
@@ -181,7 +181,7 @@ void solver::update_a(double time){
 }
 
 void solver::update_f(double time){
-    parameter[6] = f0/(1+exp(-time));
+    parameter[6] = f0 + f0*log(1+time);
 
     //cout <<parameter[0] << "----" << limit*cos(omega*time) <<"----" <<time <<"----"  << N <<endl;
 }
@@ -217,74 +217,88 @@ void solver::reset_matrix(mat &A, rowvec &B){
 }
 
 void solver::calculate_variance_and_sigma(int b, rowvec &time, mat &sampled_SIR, mat &unsampled_SIR,
-                                          int nsamples, savetofile &save_obj){
+                                          int nsamples, savetofile &save_obj,int length){
 
     mat variance = zeros<mat>(MCcycles+1, number_of_functions);
     rowvec sigma = zeros<rowvec>(number_of_functions);
     string arg = "variance";
 
-    for(int j = 0; j < MCcycles; j++){
+    for(int j = 0; j < length; j++){
         variance(j,0) += (sampled_SIR(j,0)-unsampled_SIR(j,0))*(sampled_SIR(j,0)-unsampled_SIR(j,0))/(nsamples-1);
         variance(j,1) += (sampled_SIR(j,1)-unsampled_SIR(j,1))*(sampled_SIR(j,1)-unsampled_SIR(j,1))/(nsamples-1);
         variance(j,2) += (sampled_SIR(j,2)-unsampled_SIR(j,2))*(sampled_SIR(j,2)-unsampled_SIR(j,2))/(nsamples-1);
 
-        sigma(0) += sqrt(variance(j,0))/(nsamples*MCcycles);
-        sigma(1) += sqrt(variance(j,1))/(nsamples*MCcycles);
-        sigma(2) += sqrt(variance(j,2))/(nsamples*MCcycles);
+        sigma(0) += sqrt(variance(j,0))/(nsamples*length);
+        sigma(1) += sqrt(variance(j,1))/(nsamples*length);
+        sigma(2) += sqrt(variance(j,2))/(nsamples*length);
     }
-    save_obj.save(arg, b, variance,time, MCcycles );
-    cout << "The standard diviation in S = " << sigma(0) << "|" << "I = " << sigma(1) << "|" << "R = " << sigma(2) << endl;
+    save_obj.save(arg, b, variance,time, length );
+    cout << "The standard diviation in S = " <<setprecision(5) <<sigma(0) << "|" << "I = "
+         <<setprecision(5) << sigma(1) << "|" << "R = "
+           <<setprecision(5) <<sigma(2) << endl;
+    //save_obj.save_standard_diviation(sigma(0), sigma(1), sigma(2), b);
 }
 
 void solver::execute_solve(string arg, bool Mc_arg, double B, int nsamples, savetofile &save_obj){
     double h;
     if(Mc_arg == true){
-        MCcycles = MCcycles;
+        MCcycles = MCcycles*10;
         h = double(ft-ts)/MCcycles;
     }
     else{
-        MCcycles = MCcycles*10;
+        MCcycles = MCcycles;
         h = double(ft-ts)/MCcycles;
     }
 
     rowvec time = zeros<rowvec>(MCcycles+1);
+    rowvec step_array = zeros<rowvec>(nsamples);
     mat SIR = zeros<mat>(MCcycles+1, number_of_functions);
     mat raw_SIR = zeros<mat>(MCcycles+1, number_of_functions);
 
 
+
     for(int b = 1; b < B; b++){
         reset_matrix(SIR, time);
-        if(Mc_arg == true){
+        int length = 0;
+        if(Mc_arg == true){;
             for(int n = 0; n < nsamples; n++){
 
                 set_initial(Mc_arg, SIR);
                 Npopulation(S,I,R);
                 change_b(b);
-                for(int mc_step = 0; mc_step < MCcycles; mc_step++){
+                int mc_step = 0;
+                while(time(mc_step) <= ft + 1){
                     update_a(time(mc_step));
-                      //update_f(time(mc_step));
+                    update_f(time(mc_step));
 
                     SIR(mc_step,0) += S/double(nsamples);
                     SIR(mc_step,1) += I/double(nsamples);
                     SIR(mc_step,2) += R/double(nsamples);
 
+
+
                     raw_SIR(mc_step,0) =  S;
                     raw_SIR(mc_step,1) =  I;
                     raw_SIR(mc_step,2) =  R;
 
-                    time(mc_step+1) = time(mc_step) + h;
+                    time(mc_step+1) = time(mc_step) + dt(N);
 
                     MonteCarlo(dt(N));
+
 
                     if(N <= 1){
                         MCcycles = mc_step;
                         break;
                     }
+                    mc_step += 1;
 
                 }
+                step_array(n) = mc_step;
+
             }
-            save_obj.save(arg, b, SIR,time, MCcycles);
-            calculate_variance_and_sigma(b, time, SIR, raw_SIR,nsamples, save_obj);
+
+            save_obj.save(arg, b, SIR,time, step_array.min());
+            calculate_variance_and_sigma(b, time, SIR, raw_SIR,nsamples, save_obj, step_array.min());
         }
 
         else{
@@ -299,7 +313,7 @@ void solver::execute_solve(string arg, bool Mc_arg, double B, int nsamples, save
             for(int i = 0; i < MCcycles; i++){
 
 
-                time(i + 1) = time(i) + h;
+
                 update_a(time(i));
                 update_f(time(i));
 
@@ -308,9 +322,9 @@ void solver::execute_solve(string arg, bool Mc_arg, double B, int nsamples, save
                 rk4(time(i), SIR, 2, i, h);
 
                 Npopulation(SIR(i,0),SIR(i,1),SIR(i,2));
+                time(i + 1) = time(i) + h;
             }
             save_obj.save(arg, b, SIR,time,MCcycles);
-
         }
     }
 }

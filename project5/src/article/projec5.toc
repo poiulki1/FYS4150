@@ -1,36 +1,47 @@
 \contentsline {section}{\numberline {1}Introduction}{2}{section.1}
 \contentsline {section}{\numberline {2}Theory}{2}{section.2}
-\contentsline {subsection}{\numberline {2.1}SIR-model}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.1}SIR-model}{3}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}SIRS-model}{3}{subsection.2.2}
 \contentsline {paragraph}{Vital dynamics (open system)}{3}{section*.2}
 \contentsline {paragraph}{Seasonal variation}{4}{section*.3}
-\contentsline {paragraph}{Vaccination}{4}{section*.4}
+\contentsline {paragraph}{Vaccination f(t)}{4}{section*.4}
 \contentsline {subsection}{\numberline {2.3}Numerical algorithm}{5}{subsection.2.3}
-\contentsline {subsection}{\numberline {2.4}Runge-kutta 2}{5}{subsection.2.4}
-\contentsline {subsubsection}{\numberline {2.4.1}Runge-Kutta 4}{5}{subsubsection.2.4.1}
-\contentsline {subsection}{\numberline {2.5}Monte Carlo simulation}{7}{subsection.2.5}
-\contentsline {section}{\numberline {3}Method}{7}{section.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Runge-Kutta 4}{5}{subsubsection.2.3.1}
+\contentsline {subsection}{\numberline {2.4}Monte Carlo simulation}{7}{subsection.2.4}
+\contentsline {section}{\numberline {3}Method}{8}{section.3}
 \contentsline {subsection}{\numberline {3.1}Structure of the code}{8}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Runge-Kutta}{8}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Sampling of Monte Carlo runs}{8}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Variance }{8}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.4}Variance }{9}{subsection.3.4}
 \contentsline {subsection}{\numberline {3.5}Standard deviation}{9}{subsection.3.5}
-\contentsline {subsection}{\numberline {3.6}Monte Carlo simulation}{9}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.6}Monte Carlo simulation}{10}{subsection.3.6}
 \contentsline {section}{\numberline {4}Results}{10}{section.4}
 \contentsline {subsection}{\numberline {4.1}SIRS model for closed system}{10}{subsection.4.1}
-\contentsline {subsubsection}{\numberline {4.1.1}b = 1}{10}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.1}b = 1}{11}{subsubsection.4.1.1}
 \contentsline {subsubsection}{\numberline {4.1.2}b = 2}{11}{subsubsection.4.1.2}
-\contentsline {subsubsection}{\numberline {4.1.3}b = 3}{11}{subsubsection.4.1.3}
+\contentsline {subsubsection}{\numberline {4.1.3}b = 3}{12}{subsubsection.4.1.3}
 \contentsline {subsubsection}{\numberline {4.1.4}b = 4}{12}{subsubsection.4.1.4}
-\contentsline {subsection}{\numberline {4.2}SIRS model with vital dynamics:}{12}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}b = 1}{12}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}b = 2}{13}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}b = 3}{13}{subsection.4.5}
-\contentsline {subsection}{\numberline {4.6}b = 4}{14}{subsection.4.6}
-\contentsline {subsection}{\numberline {4.7}Seasonal variation, no death and birth rate}{14}{subsection.4.7}
-\contentsline {subsection}{\numberline {4.8}Vaccination, no death and birth rate}{14}{subsection.4.8}
-\contentsline {section}{\numberline {5}Discussion}{15}{section.5}
-\contentsline {subsection}{\numberline {5.1}SIRS closed system}{15}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}SIRS with vital dynamics}{15}{subsection.5.2}
-\contentsline {section}{\numberline {6}Conclusion}{15}{section.6}
-\contentsline {section}{\numberline {7}Further work}{15}{section.7}
+\contentsline {subsubsection}{\numberline {4.1.5}SIRS model with vital dynamics:}{12}{subsubsection.4.1.5}
+\contentsline {subsection}{\numberline {4.2}b = 1}{13}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}b = 2}{13}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}b = 3}{14}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}b = 4}{14}{subsubsection.4.2.3}
+\contentsline {subsection}{\numberline {4.3}Seasonal variation, no death and birth rate}{15}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}$a = a(t)$, $b = 2$, $c = 0.5$, $d_{i} = d = e = f = 0$}{15}{subsubsection.4.3.1}
+\contentsline {subsection}{\numberline {4.4}Vaccination, no death and birth rate}{15}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}$a = a(t) $, $b = 1$, $c = 0.5$, $d_{i} = d = e = 0, f = 0.7$}{15}{subsubsection.4.4.1}
+\contentsline {section}{\numberline {5}Discussion}{16}{section.5}
+\contentsline {subsection}{\numberline {5.1}SIRS closed system}{16}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Numerical Behaviour}{16}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}Theoretical view of closed SIRS model}{16}{subsubsection.5.1.2}
+\contentsline {subsection}{\numberline {5.2}SIRS open system (vital dynamics)}{16}{subsection.5.2}
+\contentsline {subsubsection}{\numberline {5.2.1}Numerical Behaviour}{16}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {5.2.2}Theoretical view of open SIRS model}{16}{subsubsection.5.2.2}
+\contentsline {subsection}{\numberline {5.3}SIRS seasonal variation}{17}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Numerical Behaviour}{17}{subsubsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.2}Theoretical view of seasonal variation}{17}{subsubsection.5.3.2}
+\contentsline {subsection}{\numberline {5.4}SIRS time dependent vaccine and seasonal variation}{17}{subsection.5.4}
+\contentsline {subsubsection}{\numberline {5.4.1}Numerical Behaviour}{17}{subsubsection.5.4.1}
+\contentsline {subsubsection}{\numberline {5.4.2}Theoretical view of time dependent and seasonal variation}{17}{subsubsection.5.4.2}
+\contentsline {section}{\numberline {6}Conclusion}{18}{section.6}
+\contentsline {section}{\numberline {7}Future work}{18}{section.7}

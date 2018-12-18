@@ -57,7 +57,7 @@ private:
     void set_initial(bool Mc_arg, mat &M);
     void update_f(double time);
     void calculate_variance_and_sigma(int b, rowvec &time, mat &sampled_SIR, mat &unsampled_SIR,
-                                      int nsamples, savetofile &save_obj);
+                                      int nsamples, savetofile &save_obj, int length);
 public:
 
 

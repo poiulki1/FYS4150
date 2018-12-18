@@ -13,10 +13,12 @@ if argument == "yes":
 
     something1 = []
     something2 = []
+    something3 = []
 
     for i in range(1,5):
         something1.append(np.genfromtxt("../result/run_mc_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
         something2.append(np.genfromtxt("../result/run_rk4_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
+        #something3.append(np.genfromtxt("../result/sigma_mc_b_" + str(i) + "_acddief_"+ number_arg +  ".txt"))
 
     for i in range(1,5):
         plt.clf()
@@ -51,6 +53,7 @@ if argument == "yes":
         plt.tight_layout()
         plt.savefig("../figures/run_b_" + str(i) + "_abcddief_"+ number_arg + ".pdf", bbox_inches = "tight")
         plt.show()
+
 
 elif argument == "no":
     number_arg1 = str(input("What is the value used for a,b,c,d,di,e,f ? "))

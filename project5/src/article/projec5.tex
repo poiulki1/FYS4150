@@ -55,13 +55,17 @@
 \lstset{showtabs=false}
 \lstset{breaklines}
 \title{FYS3150/4150 - Project 5 \\
-  Disease Modeling with SIRS-model}
+  Numerical simulation of SIRS-model}
 \author{Aram Salihi$^1$, Adam Niewelgowski$^1$ \\
   \small $^1$Department of Physics, University of Oslo, N-0316 Oslo, Norway}
 \begin{document}
 \maketitle
-\begin{abstract}
-ABSTRAKTEN HER
+\begin{abstract} In this numerical study we are going to compare two very different
+  methods to solve the famous SIRS model. The SIRS model can easily be explained by three coupled time dependent
+   differential equations , and can be easily solved numerically. Due to the discrete and random nature of this compartment model. We have chosen to
+   compare the solution of the differential equations, with the result from the classical Monte Carlo simulation by using basic probabilty transitions rates.
+   Comparing the result produced from these methods we found out that Monte Carlo is quite accurate and agrees with RK4 results almost all the time.
+   The conclusion is that Monte Carlo method is a quite reliable and accurate method to use when solving problem in SIRS model.
 \end{abstract}
 \tableofcontents
 \newpage
@@ -87,7 +91,7 @@ how fast a disease can spread, but also how fast people heal and recover from a 
 Many models in mathematical epidemiology are derived from this basic idea used in SIR model. Models such as SIRS, MSIR, SEIR, and more.
 However this model is not only
 limited to this field of studies. The SIR model can also be expanded and be used in the study of
-traffic congestion( see e.g (REFERANSE til paperen)). The main
+traffic congestion see \cite{WU}. The main22
 idea is to have three different groups, where objects are moved around between
 groups based on system's conditions.
 % https://www.worldscientific.com/doi/abs/10.1142/S0217984904008031
@@ -111,13 +115,14 @@ In order to solve these coupled time dependent system we have chosen two types o
 First we will  directly solve the coupled differential equation by using fourth order
 Runge-Kutta method. We will then compared it with Markov Chain
 Monte Carlo method, where the transition from one state/group to another state/group
-be based on probability and random numbers. Keep in mind we will also compare
-the method against each other.
+be based on probability and random numbers. The main goal is to compare the result from the Monte Carlo simulation against the result from
+Runge Kutta. We are simply doing this to get a better understanding if Monte Carlo simulation is stable enough to produce good result when applying
+to SIRS model.
 
 \section{Theory}
 In this section we will present the theoretical framework and different types of model used in this
 numerical study. Keep in mind that the algorithm Runge-Kutta of fourth and probability transition in Monte Carlo
-is also derived in this section. For implementation of Monte Carlo and Runge kutta please see (ref her)
+is also derived in this section. For implementation of Monte Carlo and Runge kutta please see section \eqref{method}
 
 \subsection{SIR-model}\label{SIR model}
 Consider a group of "susceptible" with population $S$, which has the possibility to be infected by a deadly or non-deadly
@@ -155,7 +160,7 @@ We will now have circular system. The idea behind is demonstrated in the figure 
 \end{tikzpicture}
 \end{center}
 In other words we have consider a case with a closed system. The change in the population for this system is described by following
-coupled differential equations
+coupled differential equations (gathered from \cite{DM})
 \begin{align}
   \dv{S}{t} &= cR - \frac{aSI}{N} \\
   \dv{I}{t} &= \frac{aSI}{N} - bI \\
@@ -178,6 +183,7 @@ We will now add a few terms to the differential equations introduced in \eqref{s
   \dv{I}{t} &= \frac{aSI}{N} - bI - dI - d_{I}I\\
   \dv{R}{t} &= bI - cR - dR
 \end{align*}
+(the equations are gathered from \cite{DM})
 We will further assume that all babies added to the system are susceptible.
 If we take the sum of the these equation, we will notice that
 \begin{align}
@@ -204,7 +210,7 @@ slightly change the transmition rate $a$ to be time dependend
 where $a_{0}$ is the average transmission rate, $A$ is the maximum deviation
 from the average and $\omega$ is frequency of oscillation.
 
-\paragraph{Vaccination}\label{vaccination}  Here we introduce a new constant, $f$,
+\paragraph{Vaccination f(t)}\label{vaccination f(t)}  Here we introduce a new constant, $f$,
 which will break our circular model, and allow transition directly from \textbf{S} to
 \textbf{R}. The set of differential equation will then look like
 \begin{align*}
@@ -218,13 +224,12 @@ In this numerical study we wish to implement a time dependent vaccination rate $
 to simulate the improvement of the vaccination as more people get vaccinated as the time goes.
 The function which satisfies this is
 \begin{align}
-  f(t) = \frac{f_{0}}{1 + e^{-t}}
+  f(t) = f_{0}\ln{(1+t)} + f_{0}
 \end{align}
-Where $f_{0}$ is the initial rate of how many people gets treated with this type of vaccine.
+Where $f_{0}$ is the initial rate of how many people gets treated with this type of vaccine, and
+$t$ is the time.
 
 \subsection{Numerical algorithm}
-\subsection{Runge-kutta 2}
-
 \subsubsection{Runge-Kutta 4}
 Runge-Kutta of fourth order is widely used numerical algorithm for solving ordinary differential equations
 ,due to its precision which makes it a superior and relatively fast method. As other numerical ODE algorithms it is also based on Taylor expansion theorem.
@@ -248,85 +253,103 @@ step of
 Thus the equation we want to end up with
 \begin{align}
   y_{i+1} = y_{i} + \int_{t_{i}}^{t_{i+1}}f(t,y)\dd{t}
+  \label{pleb}
 \end{align}
-We now wish to taylor expand our integration interval around a midpoint, thus defining
+We now wish to taylor expand $f(t,y)$ to fourth order with respect to $t$ around
+the point
 \begin{align}
-  t_{i+1/2} = \frac{t_{i} + t_{i+1}}{2} = t_{i} + h/2
+  t_{i+1/2} = \frac{t_{i+1}+t_{i}}{2} \qquad   y_{i+1/2} = \frac{y_{i+1}+y_{i}}{2}
 \end{align}
-
-
-
-
-
-
-
-
-\newpage
- We first use Taylor expansion to approximate $f(t,y)$ around the midpoint of
- the integration interval, this is at $t_{i}+ h/2$, where $h$ is the step-size.
- Then we use the midpoint formula, we get
- \begin{align*}
-   \int_{t_{i}}^{t_{i+1}} f(t,y) dt \approx h f(t_{i+1/2}, y_{i+1/2}) + O(h^{3})
- \end{align*}
- where we use subscript $y(t_{i}+h/2) = y_{i+1/2}$ and equivalent for time,
- $t_{i} + h/2 = t_{i+1/2}$.
-
-Substitution into (\ref{eq:rk4_yNext}) results in
- \begin{align*}
-   y_{i+1} = y_{i} + h f(t_{i+1/2},y_{i+1/2}) + O(h^{3})
- \end{align*}
-  We have to find the value of $y_{i+1/2}$ now. By employing Euler's method we
-  get the approximation
+We are now interested in finding a good aproximate to the integral we want to evaluate
+by using the Taylor expansion. For the sake of simplicity we only focus on the one dimensional
+problem and try to find a approximation for the integral of $f(t)$. Consider the following
+\begin{align*}
+  \int_{t_{i}}^{t_{i+1}}\left[f(t_{i+1/2}) + f'(t_{i+1/2})(t-t_{i+1/2}) +
+  \frac{f''(t_{i+1/2})(t-t_{i+1/2})^{2}}{2} + \frac{f'''(t_{i+1/2})(t-t_{i+1/2})^{3}}{6}
+  + \frac{f^{4}(\xi)(t-t_{i+1/2})^{4}}{24}
+  \right]\dd{t}
+\end{align*}
+Where the local error term in the taylor expansion is $\frac{f^{4}(\xi)(t-t_{i+1/2})^{4}}{24}$.
+Integrating this, we will obtain the following expression
+\begin{align*}
+  \left[f(t_{i+1/2})t + \frac{f'(t_{i+1/2})(t-t_{i+1/2})^{2}}{2} +
+  \frac{f''(t_{i+1/2})(t-t_{i+1/2})^{3}}{6} + \frac{f'''(t_{i+1/2})(t-t_{i+1/2})^{4}}{24}
+  + \frac{f^{4}(\xi)(t-t_{i+1/2})^{5}}{120}
+  \right]_{t_{i}}^{t_{i+1}}
+\end{align*}
+Evaluating this at the point $t_{i}$ and $t_{i+1}$, and thereby adding the expression together, we
+will obtain
+\begin{align}
+\int_{t_{i}}^{t_{i+1}}f(t)\dd{t} =  2hf(t_{i+1/2}) + h^{3}\frac{f''(t_{i+1/2})}{3} + h^{5} \frac{f^{4}(\xi)}{60}
+\end{align}
+Where $h = \frac{t_{i+1}-t_{i}}{2}$ is the stepsize if using two points. Using an approximation for the second derivative (this is gathered from \cite{knut}), we can write the right hand side as
+\begin{align}
+2hf(t_{i+1/2}) + \frac{h^{3}}{3}\left(\frac{f(h + t_{i+1/2}) - 2f(t_{i+1/2}) + f(t_{i+1/2}-h) }{h^{2}} - \frac{h^{2}}{12}f^{4}(\xi) \right) + h^{5} \frac{f^{4}(\xi)}{60}
+\end{align}
+Adding all the terms together, we can write
+\begin{align}
+  \int_{t_{i}}^{t_{i+1}}f(t)\dd{t} = \frac{t_{i+1} - t_{i}}{6}\left(f(t_{i}) + 4f(t_{i+1/2}) + f(t_{i+1})\right) - h^{5} \frac{f^{4}(\xi)}{90}
+\end{align}
+Thus we the approximation we derived is called Simpsons method. This can be easily expanded to
+\begin{align}
+  \int_{t_{i}}^{t_{i+1}}f(t)\dd{t} = \frac{h}{6}\left(f(t_{i},y_{i}) + 4f(t_{i+1/2},y_{i+1/2}) + f(t_{i+1},y_{i+1})\right) + \mathcal{O}(h^{5})
+\end{align}
+Where we now use a general stepsize $h$ defined as $\frac{t_{i+1} - t_{i}}{N}$, where we have discretized
+with $N$ points. Using this approximation
+into \eqref{pleb}, we can write
+\begin{align}
+y_{i+1} \approx y_{i} + \frac{h}{6}\left(f(t_{i},y_{i}) + 4f(t_{i+1/2},y_{i+1/2}) + f(t_{i+1},y_{i+1})\right)
+\end{align}
+The problem we will now encounter is that we do not know what the value of $y_{i+1/2}$ and $y_{i+1}$ is.
+In order to solve this problem we want to split this into two parts, and write
+\begin{align}
+  y_{i+1} \approx y_{i} + \frac{1}{6}\left(hf(t_{i},y_{i}) + 2hf(t_{i+1/2},y_{i+1/2}) + 2hf(t_{i+1/2},y_{i+1/2}) + hf(t_{i+1},y_{i+1})\right)
+\end{align}
+The idea now is to approximate $y_{i+1/2}$ in two steps. In order to do this we first the need the value of
+$hf(t_{i},y_{i}$, we can define this constant as $k_{1}$. We can then use this to calculate $y_{i+1/2}$ using Eulers method
+\begin{align}
+  y_{i+1/2} = y_{i} + \underbrace{\frac{h}{2}f(t_{i},y_{i})}_{k_{1}/2}
+\end{align}
+To compute
+\begin{align}
+  k_{2} = hf(t_{i+1/2}, y_{i} + k_{1}/2)
+\end{align}
+Using this philosophy until $y_{i+1}$, we can define
+\begin{align}
+  k_{3} &= hf(t_{i+1/2}, y_{i} + k_{2}/2) \\
+  k_{4} & = hf(t_{i+1}, y_{i} + k_{3})
+\end{align}
+Thus, this is giving us
+\begin{align}
+    y_{i+1} \approx y_{i} + \frac{1}{6}\left(k_{1} + 2k_{2} + 2k_{3} + k_{4})\right)
+\end{align}
+This expression is called Runge Kutta of fourth order with a local error
+going as $\mathcal{O}(h^{5})$. As we see this expression is quite accurate even though if we use
+a large stepsize $h$ it is quite superior compared to Leap frog, Euler Cromer and Eulers midpoint.
+The algorithm is as follows:
+\begin{itemize}
+\item Find the first coefficient
   \begin{align*}
-	y_{i+1/2} \approx  y_{i} + \frac{h}{2}\dd{y}{t} = y(t_{i}) + \frac{h}{2} f(t_{i}, y_{i})
+    k_{1} = hf(t_{i},y_{i})
   \end{align*}
-  We have now derived the second-order Runge-Kutta method. Coefficients are
-  given by
+\item Use Euler's method to find $y_{i+1/2}$, so the next coefficient is
   \begin{align*}
-	k_{1} &= h f(t_{i}, y_{i}) \\
-    k_{2} &= h f(t_{i+1/2}, y_{i+1/2})
+    k_{2} = hf(t_{i}+h/2, y_{i}+k_{1}/2)
   \end{align*}
-  and the update function is
+\item Improve the slope by calculating by
   \begin{align*}
-	y_{i+1} \approx y_{i} + k_{2} + O(h^{3})
+    k_{3} = hf(t_{i} + h/2, y_{i}+k_{2}/2)
   \end{align*}
-  For the fourth-order Runge-Kutta method, we simply use the same idea, but
-  instead of approximating the integral with midpoint rulel, we now employ the
-  Simpson's rule (KANSKJE EN REFERANSE TIL DETTE, finne i boka til Morten) and
-  get
+\item Last coefficient is computed as following
   \begin{align*}
-	\int_{t_{i}}^{t_{i+1}} f(t,y)dt  \approx  \frac{h}{6}\left[f(t_{i},y_{i}) +
-    4f(t_{i+1/2}, y_{i+1/2}) + f(t_{i+1}, y_{i+1})\right] + O(h^{5})
+    k_{4} = hf(t_{i} + h, y_{i} + k_{3})
   \end{align*}
-  Since we do not know the values of the midpoints evaluation, we simply split
-  it in two steps, so the update function becomes
+\item Finally, update $y_{i+1}$
   \begin{align*}
-	y_{i+1} \approx y_{i} + \frac{h}{6}\left[f(t_{i},y_{i}) + 2f(t_{i+1/2},
-    y_{i+1/2}) + 2f(t_{i+1/2}, y_{i+1/2}) + f(t_{i+1},y_{i+1})\right]
+    y_{i+1} = y_{i} + \frac{1}{6}\left(k_{1} + 2k_{2} + 2k_{3} + k_{4}\right)
   \end{align*}
-  Summarizing the method:
-  \begin{enumerate}
-  \item Find the first coefficient
-    \begin{align*}
-      k_{1} = hf(t_{i},y_{i})
-    \end{align*}
-  \item Use Euler's method to find $y_{i+1/2}$, so the next coefficient is
-    \begin{align*}
-      k_{2} = hf(t_{i}+h/2, y_{i}+k_{1}/2)
-    \end{align*}
-  \item Improve the slope calculation by finding
-    \begin{align*}
-      k_{3} = hf(t_{i} + h/2, y_{i}+k_{2}/2)
-    \end{align*}
-  \item Last coefficient is computed as follows
-    \begin{align*}
-      k_{4} = hf(t_{i} + h, y_{i} + k_{3})
-    \end{align*}
-  \item Finally, the update function is given by
-    \begin{align*}
-      y_{i+1} = y_{i} + \frac{1}{6}\left(k_{1} + 2k_{2} + 2k_{3} + k_{4}\right)
-    \end{align*}
-  \end{enumerate}
+  For more in depth explaination please see \cite{morten}.
+\end{itemize}
 
 
 
@@ -338,11 +361,11 @@ Substitution into (\ref{eq:rk4_yNext}) results in
   In order to do this we must a have set of probability transitions explaining the move
   from $S \to I$, $I\to R$ and $R \to S$. The beauty of this is that it is easily expanded, and
   probability transition explaining other moves can easily be implemented. The implementation of this
-  is explained in (fullref her) (ref her med tall).
+  is explained in section \eqref{MC method}.
  In order to make a move from a general group $j \to q$, the
   probabilty is then, a small timestep $\Delta t$ multiplied with the number of people moving from $j \to q$.
   Recalling the factors used in the differential in \fullref{SIRS model},
-  \fullref{vital dynamics} and \fullref{vaccination},
+  \fullref{vital dynamics} and \fullref{vaccination f(t)},
    we can define probability transition to a another compartment group as following:
    \begin{itemize}
      \item Lets assume that a susceptible person from group $S$
@@ -368,7 +391,7 @@ Substitution into (\ref{eq:rk4_yNext}) results in
       \end{align}
    \end{itemize}
 As explained earlier, the SIRS model can be easily expanded. Thus we can find the transition probabilities for
-\fullref{vital dynamics} and \fullref{vaccination} by using the same philosophy. The probabilty transition are
+\fullref{vital dynamics} and \fullref{vaccination f(t)} by using the same philosophy. The probabilty transition are
 defined as
 \begin{align}
 P(B \rightarrow S) &= eN \Delta t\\
@@ -382,8 +405,8 @@ from the disease itself or a some other natural cause. For the case with vaccina
 \begin{align}
   	P(S \rightarrow R) = f \Delta t
 \end{align}
-How we update the number of people in each compartment group is explained in section (fullref til sec) og (ref tall her).
-\section{Method}
+How we update the number of people in each compartment group is explained in section \eqref{MC method}.
+\section{Method}\label{method}
 In this section we will expalin how the different type method are implement
 into our code. Keep in mind that the code is writeen in C++.
 \subsection{Structure of the code}
@@ -401,20 +424,43 @@ with the traditional C++ object orienting. The main.cpp reads and calls differen
 \subsection{Runge-Kutta} For the sake of accuracy we have chosen to implement Runge-Kutta
 of fourth order to achieve best possible results. Keep in mind, as explained in the previous section
 the code is fully object oriented and vectorized. Meaning additional numerical methods
-for solving the ODE is easily implemented.
+for solving the ODE is easily implemented. In order to use this method, first initialize the initial conditions, and
+then follow these step defined down below
+\begin{itemize}
+\item Find the first coefficient
+  \begin{align*}
+    k_{1} = hf(t_{i},y_{i})
+  \end{align*}
+\item Use Euler's method to find $y_{i+1/2}$, so the next coefficient is
+  \begin{align*}
+    k_{2} = hf(t_{i}+h/2, y_{i}+k_{1}/2)
+  \end{align*}
+\item Improve the slope by calculating by
+  \begin{align*}
+    k_{3} = hf(t_{i} + h/2, y_{i}+k_{2}/2)
+  \end{align*}
+\item Last coefficient is computed as following
+  \begin{align*}
+    k_{4} = hf(t_{i} + h, y_{i} + k_{3})
+  \end{align*}
+\item Finally, update $y_{i+1}$
+  \begin{align*}
+    y_{i+1} = y_{i} + \frac{1}{6}\left(k_{1} + 2k_{2} + 2k_{3} + k_{4}\right)
+  \end{align*}
+\end{itemize}
 \subsection{Sampling of Monte Carlo runs} When using Monte Carlo we must expect that
 for each run, the result will deviate by some decimals from the expected numerical result
 In order to minimize this deviation,
-we can sample the same simulation $N_{sample}$ times over $M$ Monte Carlo cycles.
+we can sample the same simulation $N_{sample}$ times until the desired simulation time is reached.
 The idea is to look at the average of the result when sampling
 $N_{sample}$ times. This is simply done by adding the point $N_{samples}$ times for each
-$M_{mc}$ iteration and then divide by $N_{samples}$. From this we will get the average of the result which is
+iteration of the Monte Carlo simulation, and then divide by $N_{samples}$. From this we will get the average of the result which is
 signifcantly more smoother and nicer to analyze.
 From this we can also calculate the variance for each time point, and use this
 to calculate the standard deviation.  The sampling method is implemented in the following way
 \begin{lstlisting}
   for(int n = 0; n < nsamples; n++){
-    for(int mc_step = 0; mc_step < MCcycles; mc_step++){
+    while(time(mc_step)<= final_time){
       SIR(mc_step,0) += S/double(nsamples);
       SIR(mc_step,1) += I/double(nsamples);
       SIR(mc_step,2) += R/double(nsamples);
@@ -437,13 +483,14 @@ Notice that $X$ and $\mu$ are matrices containing information about the deviatio
 $I$ and $R$ data with number of Monte Carlo cycles as length in each dimension. This method is implemented in the following way
 \begin{lstlisting}
 for(int n = 0; n < nsamples; n++){
-  for(int j = 0; j < MCcycles; j++){
+  for(int j = 0; j < length; j++){
       varS(j) += (avgS(j)-S(j))*(avgS(j)-S(j))/(nsamples-1);
       varI(j) += (avgI(j)-I(j))*(avgI(j)-I(j))/(nsamples-1);
       varR(j) += (avgR(j)-R(j))*(avgR(j)-R(j))/(nsamples-1);
     }
   }
 \end{lstlisting}
+Where length is the number of iteration completed in the Monte Carlo simulation until final time is reached.
 The goal of this is to have the variance such that we can calculate the standard deviation $\sigma = \{\sigma_{S},\sigma_{I},\sigma_{R}\}$ for each
 compartment group. This number simply tells us where the expected data should lie.
 \subsection{Standard deviation} As explained previously section \eqref{var} we want to estimate the standard deviation
@@ -454,14 +501,15 @@ in order to have a idea of where the result should lie. The standard deviation i
 This method is implemented in the following way
 \begin{lstlisting}
 for(int n = 0; n < nsamples; n++){
-  for(int j = 0; j < MCcycles; j++){
-    sigmaS += sqrt(varS(j)/(nsamples*MCcycles));
-    sigmaI += sqrt(varI(j)/(nsamples*MCcycles));
-    sigmaR += sqrt(varR(j)/(nsamples*MCcycles));
+  for(int j = 0; j < length; j++){
+    sigmaS += sqrt(varS(j)/(nsamples*length));
+    sigmaI += sqrt(varI(j)/(nsamples*length));
+    sigmaR += sqrt(varR(j)/(nsamples*length));
   }
 }
 \end{lstlisting}
-\subsection{Monte Carlo simulation} In the section of theory we explained and derived
+Where length is the number of iteration completed in Monte Carlo simulation until final time is reached.
+\subsection{Monte Carlo simulation}\label{MC method} In the section of theory we explained and derived
 the probability transitions from one compartment group to another. Using these probability transitions we can simply draw a
 random uniformed number $r$ in the inverval $[0,1]$ to check if $r \le P_{i\to j}$. If the condition is fullfilled
 we then move a human from one compartment group $i$ to $j$. This is done by subtract and adding $1$ to temporary
@@ -506,17 +554,16 @@ uniform_real_distribution<double> RandomNumberGenerator(0.0,1.0);
 In this section we will present the different result from the different type of SIRS
 model. Keep in mind that we have used $N_{mc} = 10000$ Monte Carlo cycles with $N_{samples} = 100$ sampling runs.
 In the simulation where RK4 where used, we used $N = 100000$ iterations with a $h = 1/N$. Important infomartion suc as parameter
-used are given in the title of the result.
+used are given in the title of the result. Keep in mind that the standard divitation
+$\sigma = \{\sigma_{S},\sigma_{I},\sigma_{R}\}$ for the Monte Carlo simulations are also given in the caption of the figures.
 \subsection{SIRS model for closed system} In this section we will present the result when using
-different values of the recovery rate $b$. We used $b = \{1,2,3,4\}$
+different values of the recovery rate $b$. We used $b = \{1,2,3,4\}$.
 \subsubsection{b = 1}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0_0_0_0}.pdf}
-  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
-  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
-  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
-  plotted with respect to time $t$. }
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.00833$, $\sigma_{I} =0.00868 $ and $\sigma_{R} = 0.00655$.}
   \label{closed b = 1}
 \end{figure}
 
@@ -524,10 +571,8 @@ different values of the recovery rate $b$. We used $b = \{1,2,3,4\}$
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_2_abcddief_4_0.5_0_0_0_0}.pdf}
-  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
-  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
-  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
-  plotted with respect to time $t$.}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.04218$, $\sigma_{I} =0.01513 $ and $\sigma_{R} = 0.03091$.}
   \label{closed b = 2}
 \end{figure}
 
@@ -535,90 +580,177 @@ different values of the recovery rate $b$. We used $b = \{1,2,3,4\}$
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_3_abcddief_4_0.5_0_0_0_0}.pdf}
-  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
-  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
-  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
-  plotted with respect to time $t$.}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.02416$, $\sigma_{I} = 0.00577 $ and $\sigma_{R} = 0.02070$.}
   \label{closed b = 3}
 \end{figure}
-
 \subsubsection{b = 4}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_4_abcddief_4_0.5_0_0_0_0}.pdf}
-  \caption{This figure shows to graphs, where the graphs use two different solving methods with same parameters.
-  The above graph uses the Monte Carlo method, and the below graph uses RK4. The parameter used is given in the title of the figures.
-  Notice that susceptible, infected and recovered are $S(t)$, $I(t)$ and $R(t)$. These functions are
-  plotted with respect to time $t$.}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.0075805$, $\sigma_{I} = 0.0014021 $ and $\sigma_{R} = 0.006399$.}
   \label{closed b = 4}
 \end{figure}
 
-\subsection{SIRS model with vital dynamics:}
-Using the set of rate of recovery $b = \{1,2,3,4\}$ as before
+\subsubsection{SIRS model with vital dynamics:}
+Using the set of rate of recovery $b = \{1,2,3,4\}$ as before with parameters
+$d = d_{i} = 0.1$ and $e = 0.2$.
 \subsection{b = 1}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
-  \caption{}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.01545$, $\sigma_{I} =0.01513 $ and $\sigma_{R} =0.01291 $}
   \label{open b = 1}
 \end{figure}
-\subsection{b = 2}
+\subsubsection{b = 2}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_2_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
-  \caption{}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.03111$, $\sigma_{I} = 0.01448 $ and $\sigma_{R} =0.03010$}
   \label{open b = 2}
 \end{figure}
-\subsection{b = 3}
+\subsubsection{b = 3}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_3_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
-  \caption{}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.01831$, $\sigma_{I} = 0.0.000482 $ and $\sigma_{R} = 0.0.00241 $}
   \label{open b = 3}
 \end{figure}
-\subsection{b = 4}
+\subsubsection{b = 4}
 \begin{figure}[H]
   \centering
   \includegraphics[scale = 0.6]{../figures/{run_b_4_abcddief_4_0.5_0.1_0.1_0.2_0}.pdf}
-  \caption{}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.05652$, $\sigma_{I} =0.01513 $ and $\sigma_{R} =0.01291 $.}
   \label{open b = 4}
 \end{figure}
 \subsection{Seasonal variation, no death and birth rate}
-\subssubection{$a = a(t)$, $b = 1$, $c = 0.5$, $d_{i} = d = e = f = 0$}
+\subsubsection{$a = a(t)$, $b = 2$, $c = 0.5$, $d_{i} = d = e = f = 0$}
 \begin{figure}[H]
   \centering
-  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_a(t)_0.5_0_0_0_0}.pdf}
-  \caption{}
+  \includegraphics[scale = 0.6]{../figures/{run_b_2_abcddief_a(t)_0.5_0_0_0_0}.pdf}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} = 0.014741$, $\sigma_{I} = 0.0076703 $ and $\sigma_{R} = 0.010293 $}
   \label{seasonal variation}
 \end{figure}
 
 \subsection{Vaccination, no death and birth rate}
-\subssubection{$a = 4 $, $b = 1$, $c = 0.5$, $d_{i} = d = e = f = 0$}
-FIX THIS!
+\subsubsection{$a = a(t) $, $b = 1$, $c = 0.5$, $d_{i} = d = e = 0, f = 0.7$}
 \begin{figure}[H]
   \centering
-  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_4_0.5_0_0_0_0}.pdf}
-  \caption{}
+  \includegraphics[scale = 0.6]{../figures/{run_b_1_abcddief_a(t)_0.5_0_0_0_0.7}.pdf}
+  \caption{The standard diviation for the monte carlo simulation is:
+  $\sigma_{R} =  0.008605$, $\sigma_{I} = 0.0081643 $ and $\sigma_{R} = 0.0064243 $}
   \label{vaccination}
 \end{figure}
 
 \section{Discussion}
 \subsection{SIRS closed system}
-In previous sections we did RK4 and Monte Carlo simulation for a scenario with no birth
-and death rate. As we analyze the graphs we notice minimal differences for $b = 1$ and $b = 2$.
+\subsubsection{Numerical Behaviour}
+Comparing the numerical behaviour of RK4 relative to Monte Carlo and vice versa, it is hard to find differences between these to
+results. We clearly see the same type behaviour in both methods. This can be easily seen in figure \eqref{closed b = 1},
+\eqref{closed b = 2} and \eqref{closed b = 4}. If we further analyze these result, we do notice a slightly odd behaviour in the Monte Carlo
+result for $b = 3$ in figure \eqref{closed b = 3}. Comparing this with RK4 we should expect a local maximum at $t\approx 6$, where as in the Monte Carlo simulation
+it is still increasing. The explaination behind this odd behaviour is that it could need more sampling to find this specific point (local maxima as seen in RK4).
+Another explaination of this behaviour is that the probabilty transition derived
+is a rough estimate of people transitioning from one group to another. Nevertheless when looking at the standard diviation are quite acceptable.
+\subsubsection{Theoretical view of closed SIRS model} As explained the theory section of closed SIRS model, we have assumed
+no death and birth rate. Thus, we have assumed a harmless disease, because of this we expect that $N$ is constant. When analyzing the results,
+as expected the population is constant at all time. This behaviour can especially
+be seen when the different variables $S(t)$, $I(t)$ and $R(t)$ converges to a certain value.
+However the number of people in each compartments groups differs quite signifcantly.
+For $b = 1$ we see that the number of infected increases and
+peaks at time $t \approx 1.1$ with a value of $I \approx 192$ ,and then converges to $100$ again.
+This can be interpeted as a semi strong flu. When having a small population with a intial
+infected of $100$ with a relatively low rate of recovery it is expected that the disease will still be there.
+Increasing the value of $b$ the number of infected drasticly decreases ,and goes towards zero for increasing value of $b$ as expected.
+This type of behaviour can be interpeted as strong immune system towards this disease and recovers faster.
 
-\subsection{SIRS with vital dynamics}
+\subsection{SIRS open system (vital dynamics)}
+\subsubsection{Numerical Behaviour} Comparing the two method we hardly find any differences when directly
+analyzing the graphs given in figure \eqref{closed b = 1}, \eqref{closed b = 2} , \eqref{closed b = 3} and \eqref{closed b = 4}.
+This means when introducing vital dynamics to SIRS model the Monte Carlo simulation is quite stable and reliable.
+With low standard diviation, it is to be expected that the expected result lies within that area.
+\subsubsection{Theoretical view of open SIRS model} Analyzing the result we clearly see a large increase of the population.
+This means, the choice of our parameters $e$ , $d_{i}$ and $d$ have produced a world with a increasing population.
+analyzing figure \eqref{open b = 1} and \eqref{open b = 2} and comparing it with figure \eqref{open b = 3} and \eqref{open b = 4}.
+Since the number of infected in figure \eqref{open b = 1} and \eqref{open b = 2} slowly increases, we can interpret it as a small disease since we hardly
+see any dramatic decrease in the number of infected people. Thinking about the general death rate, we clearly see that this rate has also minimal effect on the system
+since the number of susceptible is always increasing. Thus the death rate is almost neglible.
+\vspace{3mm}
+\\
+Looking at the cases for $b > 2$ the number of infected dramatically decreases and converges towards zero.
+Here we clearly see that death rate of infected people has an big inpact of group $I$.
+A explaination to this: is that the number of people recovering from the disease is also decreasing. The disease
+kills the infected people fast, and has not the chance to infect susceptibles. Thus the disease dies out naturally.
+This can be seen in figure \eqref{open b = 4}.
+In general, we clearly see that the factor $eN$ dominates eventhough the birth rate is quite low
+\begin{align}
+  eN >> dR + (d_{i} + d)I
+\end{align}
+This means that the system is quite sensitive for cases when adding new susceptibles into the system.
+
+\subsection{SIRS seasonal variation}
+\subsubsection{Numerical Behaviour} Comparing the result again, we can confirm that the Monte Carlo simulation is
+quite reliable method when having time dependent parameters. We do notice small differences. This small difference may be fixed by increasing the number of sampling, but this is just a quick guess.
+After increasing the number of samples the small differences may still be there. Nevertheless, the system is quite stable and behaves in the same manner as the RK4 result.
+With low standard diviation, it is to be expected that the expected result lies within that area.
+\subsubsection{Theoretical view of seasonal variation}  When analyzing figure \eqref{seasonal variation} we notice that the number of infected is all time high for $t \approx 0.4$.
+This can be interpreted as the cold period of the year/season and many people gets the cold or the influenza.
+After some time the number of infected people decreases and number of recovered people increases.
+This can be seen as warmer period comming and the immune system get stronger. After a while the system stabilizes
+and the number of people in each compartment group oscillates between moving from one group to another.
+This is a normal behaviour, which can be seen in every day life.
+
+\subsection{SIRS time dependent vaccine and seasonal variation}
+\subsubsection{Numerical Behaviour} We want to add one more time dependent parameter to check wether system remain stable as before.
+When  analyzing and comparing the behaviour of the Monte Carlo simulation and RK4 in figure \eqref{vaccination},
+one can hardly find any differences between these. This means that we are very close to the expected result.
+With standard deviation relatively small $\sigma_{R} =  0.008605$, $\sigma_{I} = 0.0081643 $ and $\sigma_{R} = 0.0064243$, it
+is fair to say that Monte Carlo simulation for this scenario is pretty accurate.
+\subsubsection{Theoretical view of time dependent and seasonal variation} The thought of choosing a
+vaccine defined as
+\begin{align}
+  f(t) = f_{0}\ln{(1+t)} + f_{0}
+\end{align}
+Was that after some time $t$ the number of infected would go down to zero as more people get immune to disease introduced in previous section.
+This behaviour where not produced as the number of infected peaks at $\approx 204$ at $t\approx 0.8$, but decreases and osillates around $\approx 100$.
+The reason behind this behaviour is that the vaccine term in the differential equationa and in the probability transission is wrong.
+Since the function above is defined to be slowly increasing, the number of infected should also slowly decrease eventhough
+we have an time dependent $a(t)$ which represent the rate of how fast the disease spreads. A suggestion would be to
+have $fR$ rather than $f$.
 
 \section{Conclusion}
-We are the best, mUUUtherfuckers.
+The main goal of this numerical study was to compare and check if Monte Carlo was stable enough to produce
+similar result as Runge Kutta 4 which solved SIRS directly. As we found through this study, the result produced by Monte Carlo
+for different SIRS scenarios
+was quite accurate with very small diviations when comparing with result from Runga Kutta method.
+With low standard diviation we can expect that we are really close to the expected result.
+Remember that this is for cases for a system with a low population. Unfortunately we did not manage to test algorithm with a larger population size and extreme cases for the parameters
+to check if the result ramain stable. Intuitively for the case of larger population size, we belive that system will still remain stable and produce
+accurate results we are looking at the transition one person moving to another group. Since the transission is heavily dependent on the choice of
+$\Delta t$ and is defined to be $\Delta = \frac{1}{\alpha N}$ where $\alpha$ is one of the parameters defined in this study.
+Increasing $N$ will not harm the transition from one group to another since it $\Delta t$ adjust itself with respect to the population change.
+This can be done as future work to check wether if this is true or not. For the cases with extreme parameters it is hard to say if the
+system will stable or not.
+\vspace{3mm}
+\\
+The second goal of this numerical study was to get a better understanding of the SIRS model worked.
+We found out in order to have a growth in the population the term $eN$ has to dominate. Comparing the value of $e$, $d$ and $d_{i}$,
+the value of $e$ has to be slightly larger than $d_{i}$ and $d$ in order to get this behaviour. Meaning that the term $eN$ will always dominate
+if birth rate is slightly larger than the death rate.
 \section{Future work}
-Theres seems to be a small bug in the C++ code. When analyzing the graphs produced
-by Monte Carlo and RK4 method, for some parameters there is a signifcantly large difference.
-This is clearly seen when looking at the y-axis. For future work we want to look deeper into this
-in order to find the bug, or to get a better understanding of why this difference between these two methods appears.
+For this numerical study there is alot that can be done for future work. One of the goal are to paralyze
+and make the C++ program more general such it can be applied to any Compartment disease models.
+Further we could increase the number of samplings to check if RK4 and Monte Carlo overlap each other.
+As for the study of SIRS model we could try more parameters to check extreme cases, such as introducing a deadly disease
+and antidote for that disease to check the behaviour and how the population changes. An another interesting case
+would be to increase the total pouplation $N$ to see if RK4 and Monte Carlo still agree with each other.
 
-
-\newpage
-%\bibliographystyle{apastyle}
-%\bibliography{project5}
+\bibliographystyle{apalike}
+\bibliography{project5}
 \end{document}

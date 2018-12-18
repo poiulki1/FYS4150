@@ -1,0 +1,20 @@
+\begin{thebibliography}{}
+
+\bibitem[Hjorth-Jensen, 2018]{DM}
+Hjorth-Jensen, M. (2018).
+\newblock Project 5, disease modeling.
+
+\bibitem[Hjorth-Jensen, 2015]{morten}
+Hjorth-Jensen, M. (Fall 2015).
+\newblock Computational physics fys3150/fys4150, lecture notes.
+
+\bibitem[Jianjun~Wu and Sun, 2004]{WU}
+Jianjun~Wu, Z.~G. and Sun, H. (2004).
+\newblock Simulation of traffic congestion with sir model.
+\newblock {\em Modern Physics Letters B}, Vol. 18, No. 30, pp. 1537-1542.
+
+\bibitem[M{\o}rken, 2017]{knut}
+M{\o}rken, K. (2017).
+\newblock Numerical algorithms and digital representation.
+
+\end{thebibliography}

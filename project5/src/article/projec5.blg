@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: projec5.aux
+The style file: apalike.bst
+Database file #1: project5.bib
+Warning--empty journal in DM
+Warning--empty journal in morten
+Warning--empty journal in knut
+You've used 4 entries,
+            1935 wiz_defined-function locations,
+            490 strings with 4007 characters,
+and the built_in function-call counts, 1124 in all, are:
+= -- 103
+> -- 34
+< -- 4
++ -- 10
+- -- 10
+* -- 78
+:= -- 216
+add.period$ -- 9
+call.type$ -- 4
+change.case$ -- 25
+chr.to.int$ -- 4
+cite$ -- 7
+duplicate$ -- 52
+empty$ -- 81
+format.name$ -- 16
+if$ -- 208
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 4
+newline$ -- 20
+num.names$ -- 12
+pop$ -- 25
+preamble$ -- 1
+purify$ -- 25
+quote$ -- 0
+skip$ -- 46
+stack$ -- 0
+substring$ -- 48
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 3
+while$ -- 8
+width$ -- 0
+write$ -- 45
+(There were 3 warnings)

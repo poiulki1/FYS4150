@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
                       read_parameters::init_R, read_parameters::Npopulation,
                       read_parameters::final_time, read_parameters::start_time);
 
-    savetofile save_obj("run", "4_0.5_0_0_0_0.7");
+    savetofile save_obj("run", "a(t)_0.5_0_0_0_0.7");
 
     run_solver.initialize_parameters(read_parameters::a, read_parameters::b, read_parameters::c, read_parameters::d,
                                      read_parameters::d_i,read_parameters::e,read_parameters::f,
